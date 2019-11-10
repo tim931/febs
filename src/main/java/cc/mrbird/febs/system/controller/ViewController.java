@@ -120,6 +120,16 @@ public class ViewController extends BaseController {
         return FebsUtil.view("system/user/userAdd");
     }
 
+    /*新增客戶*/
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/client/add")
+    /*要求subject中必须同时含有client:add的权限才能执行方法systemClientAdd()
+            。否则抛出异常AuthorizationException。*/
+    @RequiresPermissions("client:add")
+    public String systemClientAdd() {
+        /*调用工具类拿到视图前缀加上视图名跳转到添加页面*/
+        return FebsUtil.view("system/client/clientAdd");
+    }
+
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/user/detail/{username}")
     @RequiresPermissions("user:view")
     public String systemUserDetail(@PathVariable String username, Model model) {

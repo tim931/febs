@@ -15,7 +15,7 @@
                                     </div>
 
                                     <div class="layui-inline">
-                                        <label class="layui-form-label layui-form-label-sm">客户手机号</label>
+                                        <label class="layui-form-label layui-form-label-sm">客户手机</label>
                                         <div class="layui-input-inline">
                                             <input type="text" name="clientPhone" id="clientPhone" class="layui-input">
                                         </div>
@@ -124,7 +124,7 @@
 </script>
 
   <!--对表格的查看、修改、删除操作-->
-<script type="text/html" id="user-option">
+<script type="text/html" id="client-option">
     <span shiro:lacksPermission="client:view,client:update,client:delete">
         <span class="layui-badge-dot febs-bg-orange"></span> <!--无权限-->
     </span>
@@ -171,7 +171,7 @@
             click: function (name, elem, event) {
                 var checkStatus = table.checkStatus('clientTable');
                 if (name === 'add') { /*==和===是有区别的alert('1'==1);//结果是true ('1'===1);//结果是false*/
-                    febs.modal.open('新增用户', 'system/client/add', {
+                    febs.modal.open('新增客户', 'system/client/add', {
                         btn: ['提交', '重置'],
                         area: $(window).width() <= 750 ? '95%' : '50%',
                         yes: function (index, layero) {
@@ -286,7 +286,6 @@
         //刷新点击事件
         $reset.on('click', function () {
             $searchForm[0].reset();
-            treeSelect.revokeNode('dept');
             sortObject.type = 'null';
             tableIns.reload({where: getQueryParams(), page: {curr: 1}, initSort: sortObject});
         });
@@ -314,8 +313,8 @@
         }
 
         function getQueryParams() {
-            var createTimeFrom1,
-                createTimeTo1,
+            var createTimeFrom1="",
+                createTimeTo1="",
                 createTime = $searchForm.find('input[name="createTime1"]').val();
             if (createTime) {
                 /*split方法截取*/
@@ -331,7 +330,6 @@
                 clientAddress: $searchForm.find("input[name='clientAddress']").val().trim(),
                 clientLevel: $searchForm.find("select[name='clientLevel']").val().trim(),
                 clientSex: $searchForm.find("select[name='clientSex']").val().trim(),
-                createTime: $searchForm.find("input[name='createTime']").val().trim(),
                 creator: $searchForm.find("input[name='creator']").val().trim(),
                 invalidate_ie_cache: new Date()
             };

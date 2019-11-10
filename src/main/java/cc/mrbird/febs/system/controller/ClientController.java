@@ -2,11 +2,13 @@ package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.ControllerEndpoint;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.entity.DeptTree;
 import cc.mrbird.febs.common.entity.FebsResponse;
 import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.MD5Util;
 import cc.mrbird.febs.system.entity.Client;
+import cc.mrbird.febs.system.entity.Dept;
 import cc.mrbird.febs.system.entity.User;
 import cc.mrbird.febs.system.service.IClientService;
 import cc.mrbird.febs.system.service.IUserService;
@@ -46,10 +48,14 @@ public class ClientController extends BaseController {
 
     @PostMapping
     @RequiresPermissions("client:add")
-    @ControllerEndpoint(operation = "新增用户", exceptionMessage = "新增用户失败")
-    public FebsResponse addUser(@Valid Client client) {
+    @ControllerEndpoint(operation = "新增客户", exceptionMessage = "新增客户失败")
+    public FebsResponse addClient(@Valid Client client) {
         this.iClientService.createClient(client);
         return new FebsResponse().success();
     }
+
+
+
+
 
 }

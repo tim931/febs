@@ -55,19 +55,16 @@ public class Client implements Serializable {
     private String clientName;
 
     /**
-     * 客户电话
+     * 客户手机
      */
     @TableField("CLIENT_PHONE")
-    @IsMobile(message = "{phone}")
-    @ExcelField(value = "联系电话")
-    private Integer clientPhone;
+    @ExcelField(value = "客户手机")
+    private String clientPhone;
 
     /**
      * 客户邮箱
      */
     @TableField("CLIENT_EMAIL")
-    @Size(max = 50, message = "{noMoreThan}")
-    @Email(message = "{email}")
     @ExcelField(value = "邮箱")
     private String clientEmail;
 
@@ -82,7 +79,6 @@ public class Client implements Serializable {
      * 客户级别  客户级别 1普通、2中级、3高级
      */
     @TableField("CLIENT_LEVEL")
-    @NotBlank(message = "{level}")
     @ExcelField(value = "级别", writeConverterExp = "1=普通,2=中级,3=高级")
     private Integer clientLevel;
 
@@ -90,7 +86,6 @@ public class Client implements Serializable {
      * 客户性别
      */
     @TableField("CLIENT_SEX")
-    @NotBlank(message = "{sex}")
     @ExcelField(value = "性别", writeConverterExp = "0=男,1=女,2=保密")
     private String clientSex;
 
@@ -119,7 +114,6 @@ public class Client implements Serializable {
      * 创建人
      */
     @TableField("CREATOR")
-    @NotBlank(message = "{creator}")
     @ExcelField(value = "创建人")
     private String creator;
 

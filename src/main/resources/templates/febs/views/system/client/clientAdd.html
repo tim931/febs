@@ -1,0 +1,101 @@
+·<style>
+    #client-add {
+        padding: 20px 25px 25px 0;
+    }
+    #client-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="client-add">
+    <form class="layui-form" action="" lay-filter="client-add-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">客户名称：</label>
+            <div class="layui-input-block">
+                <input type="text" name="clientName" minlength="2" maxlength="10" lay-verify="range|clientName"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require" >客户手机：</label>
+            <div class="layui-input-block">
+                <input type="tel"  name="clientPhone" lay-verify="phone|required" required autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱：</label>
+            <div class="layui-input-block">
+                <input type="text" name="clientEmail" lay-verify="email" maxlength="50" autocomplete="off"
+                       class="layui-input">
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label  febs-form-item-require"  >客户地址：</label>
+            <div class="layui-input-block">
+                <input type="text" name="clientAddress" lay-verify="required" maxlength="50" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require " >客户级别：</label>
+            <div class="layui-input-block" >
+                <select name="clientLevel" lay-verify="required">
+                    <option value=""></option>
+                    <option value="1">普通</option>
+                    <option value="2">中级</option>
+                    <option value="3">高级</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label ">性别：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="clientSex" value="0" title="男性">
+                <input type="radio" name="clientSex" value="1" title="女性">
+                <input type="radio" name="clientSex" value="2" title="保密" checked="">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label ">创建人：</label>
+            <div class="layui-input-block">
+                <input type="text" name="creator" id="creator" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="client-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    layui.use(['febs', 'form', 'formSelects', 'validate', 'treeSelect'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            formSelects = layui.formSelects,
+            form = layui.form,
+            validate = layui.validate;
+
+        /*是表单验证的关键字*/
+        form.verify(validate);
+        form.render();
+        formSelects.render();
+
+        form.on('submit(client-add-form-submit)', function (data) {
+            debugger;
+            febs.post(ctx + 'client', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增客户成功');
+                $('#febs-client').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

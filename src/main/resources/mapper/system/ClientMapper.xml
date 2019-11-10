@@ -17,28 +17,31 @@
         t_client
         WHERE 1 = 1
         <if test="client.clientName != null and client.clientName != ''">
-            AND CLIENT_NAME = #{client.clientName}
+            AND CLIENT_NAME like CONCAT ('%',#{client.clientName},'%')
         </if>
         <if test="client.clientPhone != null and client.clientPhone != ''">
-            AND CLIENT_PHONE = #{client.clientPhone}
+            AND CLIENT_PHONE like CONCAT ('%',#{client.clientPhone},'%')
         </if>
         <if test="client.clientEmail != null and client.clientEmail != ''">
-            AND CLIENT_EMAIL = #{client.clientEmail}
+            AND CLIENT_EMAIL like CONCAT ('%',#{client.clientEmail},'%')
         </if>
         <if test="client.clientAddress != null and client.clientAddress != ''">
-            AND CLIENT_ADDRESS = #{client.clientAddress}
+            AND CLIENT_ADDRESS like CONCAT ('%',#{client.clientAddress },'%')
         </if>
         <if test="client.clientLevel != null and client.clientLevel != ''">
             AND CLIENT_LEVEL = #{client.clientLevel}
         </if>
         <if test="client.clientSex != null and client.clientSex !=''">
-            And CLIENT_SEX &gt; #{client.clientSex}
+            And CLIENT_SEX = #{client.clientSex}
         </if>
-        <if test="client.createTime!= null and client.createTime !=''">
-            And CREATE_TIME &lt; #{client.createTime}
+        <if test="client.createTimeFrom != null and client.createTimeFrom !=''">
+            And create_time > #{client.createTimeFrom}
+        </if>
+        <if test="client.createTimeTo!= null and client.createTimeTo !=''">
+            And create_time &lt; #{client.createTimeTo}
         </if>
         <if test="client.creator!= null and client.creator !=''">
-            And CREATOR &lt; #{client.creator}
+            And CREATOR like CONCAT ('%',#{client.creator},'%')
         </if>
 
     </sql>
