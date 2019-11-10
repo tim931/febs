@@ -192,23 +192,11 @@
                             layui.each(checkStatus.data, function (key, item) {
                                 clientIds.push(item.clientId)
                             });
-                            deleteUsers(clientIds.join(','));
+                            deleteClients(clientIds.join(','));
                         });
                     }
                 }
-              /*  if (name === 'reset') {
-                    if (!checkStatus.data.length) {
-                        febs.alert.warn('请选择需要重置密码的用户');
-                    } else {
-                        var usernames = [];
-                        layui.each(checkStatus.data, function (key, item) {
-                            usernames.push(item.username)
-                        });
-                        febs.post(ctx + 'client/password/reset/' + usernames.join(','), null, function () {
-                            febs.alert.success('所选用户密码已重置为1234qwer');
-                        });
-                    }
-                }*/
+
                 if (name === 'export') {
                     var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
                     params.pageSize = $view.find(".layui-laypage-limits option:selected").val();
@@ -251,6 +239,9 @@
             if (layEvent === 'del') {
                 febs.modal.confirm('删除用户', '确定删除该用户？', function () {
                     deleteClients(data.clientId);
+
+
+
                 });
             }
             if (layEvent === 'edit') {
@@ -336,7 +327,7 @@
         }
 
         function deleteClients(clientIds) {
-            febs.get(ctx + 'client/delete/' + userIds, null, function () {
+            febs.get(ctx + 'client/delete/' + clientIds, null, function () {
                 febs.alert.success('删除客户成功');
                 $query.click();
             });

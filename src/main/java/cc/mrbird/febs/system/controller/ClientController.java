@@ -39,6 +39,7 @@ public class ClientController extends BaseController {
     @Autowired
     private IClientService iClientService;
 
+    /*查找所有的用户 分页*/
     @GetMapping("list")
     @RequiresPermissions("client:view")
     public FebsResponse clientList(Client client, QueryRequest request) {
@@ -46,6 +47,7 @@ public class ClientController extends BaseController {
         return new FebsResponse().success().data(dataTable);
     }
 
+   /* 新增一条客户信息*/
     @PostMapping
     @RequiresPermissions("client:add")
     @ControllerEndpoint(operation = "新增客户", exceptionMessage = "新增客户失败")
@@ -55,7 +57,14 @@ public class ClientController extends BaseController {
     }
 
 
-
-
+    /*删除一个客户信息*/
+     @GetMapping("delete/{clientIds}")
+     @RequiresPermissions("client:delete")
+     @ControllerEndpoint(operation = "删除客户信息", exceptionMessage = "删除客户信息失败")
+     public FebsResponse deleteClients(@NotBlank(message = "{required}") @PathVariable String clientIds) {
+         String[] ids = clientIds.split(StringPool.COMMA);
+         this.iClientService.deleteClientIds(ids);
+         return new FebsResponse().success();
+     }
 
 }
