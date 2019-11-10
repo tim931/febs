@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 该配置文件的头信息可以查看mybatis的说明文档 -->
+<!-- Car类和MySQL中的t_car表的映射文件 -->
+<!-- namespace相当于该mapper.xml映射文件的唯一标识 -->
+<!-- namespace="mapper文件的全路径" -->
+<!-- 通过 namespace.id 获取对应的SQL语句 -->
+
+<mapper namespace="cc.mrbird.febs.system.mapper.CarMapper">
+    <resultMap id="carMap" type="cc.mrbird.febs.system.entity.Car">
+        <result column="CAR_ID" jdbcType="DECIMAL" property="carId" />
+        <result column="LICENSE_PLATE" jdbcType="VARCHAR" property="licensePlate" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+        <result column="CREATOR" jdbcType="VARCHAR" property="creator" />
+    </resultMap>
+
+    <!-- id的值就是给该select取得标识， parameterType:输入参数的类型
+   resultType的值是该SQL语句的返回结果集类型 -->
+    <!-- 注意：此处写sql语句不需要打分号 -->
+    <!-- #{id}就相当于一个占位符 -->
+
+    <select id="findCarPage" parameterType="car" resultType="car">
+        SELECT
+             CAR_ID carId,
+             LICENSE_PLATE licensePlate,
+             CREATE_TIME  createTime,
+             MODIFY_TIME  modifyTime,
+             CREATOR   creator
+        FROM
+            t_car
+        WHERE 1 = 1
+        <if test="car.licensePlate != null and car.licensePlate != ''">
+            AND LICENSE_PLATE like CONCAT('%',#{car.licensePlate},'%')
+        </if>
+        <if test="car.createTimeFrom != null and car.createTimeFrom !=''">
+            And CREATE_TIME &gt; #{car.createTimeFrom}
+        </if>
+        <if test="car.createTimeTo!= null and car.createTimeTo !=''">
+            And CREATE_TIME &lt; #{car.createTimeTo}
+        </if>
+        <if test="car.creator != null and car.creator != ''">
+            AND CREATOR like CONCAT('%',#{car.creator},'%')
+        </if>
+        ORDER BY
+        CAR_ID
+    </select>
+
+
+
+
+</mapper>

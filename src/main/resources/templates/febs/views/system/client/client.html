@@ -1,0 +1,347 @@
+<div class="layui-fluid layui-anim febs-anim" id="febs-client" lay-title="客户管理">
+    <div class="layui-row febs-container">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body febs-table-full">
+                    <form class="layui-form layui-table-form" lay-filter="client-table-form">
+                        <div class="layui-row">
+                            <div class="layui-col-md10">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">客户名称</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="clientName" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">客户手机号</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="clientPhone" id="clientPhone" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">客户邮箱</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="clientEmail" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">客户地址</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="clientAddress" id="clientAddress" lay-filter="dept"
+                                                   class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">客户级别</label>
+                                        <div class="layui-input-inline">
+                                            <select name="clientLevel">
+                                                <option value=""></option>
+                                                <option value="1">普通</option>
+                                                <option value="2">中级</option>
+                                                <option value="3">高级</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">客户性别</label>
+                                        <div class="layui-input-inline">
+                                            <select name="clientSex">
+                                                <option value=""></option>
+                                                <option value="0">男</option>
+                                                <option value="1">女</option>
+                                                <option value="2">保密</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">创建时间</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="createTime1" class="layui-input" id="createTime">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">创建人</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="creator" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                           <!-- 查询表格信息-->
+                            <div class="layui-col-md2 layui-col-sm12 layui-col-xs12 table-action-area">
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="query">
+                                    <i class="layui-icon">&#xe848;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="reset">
+                                    <i class="layui-icon">&#xe79b;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more"
+                                     shiro:hasAnyPermissions="client:add,client:update,client:password:reset,client:export">
+                                    <i class="layui-icon">&#xe875;</i>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <table lay-filter="clientTable" lay-data="{id: 'clientTable'}"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+     <!--设置客户的级别-->
+<script type="text/html" id="client-level">
+    {{#
+    var clientLevel = {
+    3: {title: '高级', color: 'red'},
+    2: {title: '中级', color: 'green'},
+    1: {title: '普通', color: 'volcano'}
+    }[d.clientLevel];
+    }}
+    <span class="layui-badge febs-tag-{{clientLevel.color}}">{{ clientLevel.title }}</span>
+</script>
+
+<script type="text/html" id="client-sex">
+    <!--页面转化用的-->
+    {{#
+    var clientSex = {
+    2: {title: '保密'},
+    1: {title: '女'},
+    0: {title: '男'}
+    }[d.clientSex];
+    }}
+    <span>{{ clientSex.title }}</span>
+</script>
+
+  <!--对表格的查看、修改、删除操作-->
+<script type="text/html" id="user-option">
+    <span shiro:lacksPermission="client:view,client:update,client:delete">
+        <span class="layui-badge-dot febs-bg-orange"></span> <!--无权限-->
+    </span>
+        <!--查看用户信息-->
+    <a lay-event="detail" shiro:hasPermission="client:view"><i
+            class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>
+        <!--更新用户信息-->
+    <a lay-event="edit" shiro:hasPermission="client:update"><i
+            class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
+        <!--删除用户信息-->
+    <a lay-event="del" shiro:hasPermission="client:delete">
+        <i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
+</script>
+
+
+<script data-th-inline="none" type="text/javascript">
+    layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs', 'treeSelect'], function () {
+        var $ = layui.jquery,
+            laydate = layui.laydate,
+            febs = layui.febs,
+            form = layui.form,
+            table = layui.table,
+            treeSelect = layui.treeSelect,
+            dropdown = layui.dropdown,
+            $view = $('#febs-client'),
+            $query = $view.find('#query'),
+            $reset = $view.find('#reset'),
+            $searchForm = $view.find('form'),
+            sortObject = {field: 'createTime', type: null},
+            tableIns;
+
+        form.render();
+
+        initTable();
+
+        laydate.render({
+            elem: '#createTime',
+            range: true,
+            trigger: 'click'
+        });
+
+        dropdown.render({ /*下拉显示*/
+            elem: $view.find('.action-more'),
+            click: function (name, elem, event) {
+                var checkStatus = table.checkStatus('clientTable');
+                if (name === 'add') { /*==和===是有区别的alert('1'==1);//结果是true ('1'===1);//结果是false*/
+                    febs.modal.open('新增用户', 'system/client/add', {
+                        btn: ['提交', '重置'],
+                        area: $(window).width() <= 750 ? '95%' : '50%',
+                        yes: function (index, layero) {
+                            $('#client-add').find('#submit').trigger('click');
+                        },
+                        btn2: function () {
+                            $('#client-add').find('#reset').trigger('click');
+                            return false;
+                        }
+                    });
+                }
+                if (name === 'delete') {
+                    if (!checkStatus.data.length) {
+                        febs.alert.warn('请选择需要删除的用户');
+                    } else {
+                        febs.modal.confirm('删除用户', '确定删除该用户？', function () {
+                            var clientIds = [];
+                            layui.each(checkStatus.data, function (key, item) {
+                                clientIds.push(item.clientId)
+                            });
+                            deleteUsers(clientIds.join(','));
+                        });
+                    }
+                }
+              /*  if (name === 'reset') {
+                    if (!checkStatus.data.length) {
+                        febs.alert.warn('请选择需要重置密码的用户');
+                    } else {
+                        var usernames = [];
+                        layui.each(checkStatus.data, function (key, item) {
+                            usernames.push(item.username)
+                        });
+                        febs.post(ctx + 'client/password/reset/' + usernames.join(','), null, function () {
+                            febs.alert.success('所选用户密码已重置为1234qwer');
+                        });
+                    }
+                }*/
+                if (name === 'export') {
+                    var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
+                    params.pageSize = $view.find(".layui-laypage-limits option:selected").val();
+                    params.pageNum = $view.find(".layui-laypage-em").next().html();
+                    febs.download(ctx + 'client/excel', params, '用户信息表.xlsx');
+                }
+            },
+            options: [{
+                name: 'add',
+                title: '新增用户',
+                perms: 'client:add'
+            }, {
+                name: 'delete',
+                title: '删除用户',
+                perms: 'client:delete'
+            }, {
+                name: 'export',
+                title: '导出Excel',
+                perms: 'user:export'
+            }]
+        });
+
+        /*树形下拉选择器*/
+        treeSelect.render({
+            elem: $view.find('#dept'),
+            type: 'get',
+            data: ctx + 'client/select/tree',
+            placeholder: '请选择',
+            search: false
+        });
+
+        table.on('tool(clientTable)', function (obj) {
+            var data = obj.data,
+                layEvent = obj.event;
+            if (layEvent === 'detail') {
+                febs.modal.view('用户信息', 'system/client/detail/' + data.clientName, {
+                    area: $(window).width() <= 750 ? '95%' : '660px'
+                });
+            }
+            if (layEvent === 'del') {
+                febs.modal.confirm('删除用户', '确定删除该用户？', function () {
+                    deleteClients(data.clientId);
+                });
+            }
+            if (layEvent === 'edit') {
+                febs.modal.open('修改用户', 'system/client/update/' + data.clientName, {
+                    area: $(window).width() <= 750 ? '90%' : '50%',
+                    btn: ['提交', '取消'],
+                    yes: function (index, layero) {
+                        $('#user-update').find('#submit').trigger('click');
+                    },
+                    btn2: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        });
+
+        table.on('sort(clientTable)', function (obj) {
+            sortObject = obj;
+            tableIns.reload({
+                initSort: obj,
+                where: $.extend(getQueryParams(), {
+                    field: obj.field,
+                    order: obj.type
+                })
+            });
+        });
+        //查询点击事件
+        $query.on('click', function () {
+            var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
+            tableIns.reload({where: params, page: {curr: 1}});
+        });
+
+        //刷新点击事件
+        $reset.on('click', function () {
+            $searchForm[0].reset();
+            treeSelect.revokeNode('dept');
+            sortObject.type = 'null';
+            tableIns.reload({where: getQueryParams(), page: {curr: 1}, initSort: sortObject});
+        });
+
+        //页面表格初始化渲染
+        function initTable() {
+            tableIns = febs.table.init({
+                elem: $view.find('table'),
+                id: 'clientTable',
+                url: ctx + 'client/list',
+                cols: [[
+                    {type: 'checkbox'},
+                    {field: 'clientName', title: '客户名称', minWidth: 100},
+                    {field: 'clientPhone', title: '客户手机号', minWidth: 100},
+                    {field: 'clientEmail', title: '客户邮箱', minWidth: 180},
+                    {field: 'clientAddress', title: '客户地址', minWidth: 165},
+                    {title: '客户级别', templet: '#client-level', minWidth: 165 },
+                    {title: '客户性别', templet: '#client-sex', minWidth: 165 },
+                    {field: 'createTime', title: '创建时间', minWidth: 180, sort: true},
+                    {field: 'modifyTime', title: '修改时间', minWidth: 180, sort: true},
+                    {field: 'creator', title: '创建人', minWidth: 165},
+                    {title: '操作', toolbar: '#client-option', minWidth: 140}
+                ]]
+            });
+        }
+
+        function getQueryParams() {
+            var createTimeFrom1,
+                createTimeTo1,
+                createTime = $searchForm.find('input[name="createTime1"]').val();
+            if (createTime) {
+                /*split方法截取*/
+                createTimeFrom1 = createTime.split(' - ')[0];
+                createTimeTo1 = createTime.split(' - ')[1];
+            }
+            return {
+                createTimeFrom: createTimeFrom1,
+                createTimeTo: createTimeTo1,
+                clientName: $searchForm.find('input[name="clientName"]').val().trim(),
+                clientPhone: $searchForm.find("input[name='clientPhone']").val(),
+                clientEmail: $searchForm.find("input[name='clientEmail']").val(),
+                clientAddress: $searchForm.find("input[name='clientAddress']").val().trim(),
+                clientLevel: $searchForm.find("select[name='clientLevel']").val().trim(),
+                clientSex: $searchForm.find("select[name='clientSex']").val().trim(),
+                createTime: $searchForm.find("input[name='createTime']").val().trim(),
+                creator: $searchForm.find("input[name='creator']").val().trim(),
+                invalidate_ie_cache: new Date()
+            };
+        }
+
+        function deleteClients(clientIds) {
+            febs.get(ctx + 'client/delete/' + userIds, null, function () {
+                febs.alert.success('删除客户成功');
+                $query.click();
+            });
+        }
+    })
+</script>

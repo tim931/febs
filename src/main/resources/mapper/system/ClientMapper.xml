@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.system.mapper.ClientMapper">
+    <sql id="findClientDetailSql">
+        SELECT
+        CLIENT_ID clientId,
+        CLIENT_NAME clientName,
+        CLIENT_PHONE clientPhone ,
+        CLIENT_EMAIL clientEmail,
+        CLIENT_ADDRESS clientAddress,
+        CLIENT_LEVEL clientLevel,
+        CLIENT_SEX clientSex,
+        CREATE_TIME  createTime,
+        MODIFY_TIME modifyTime,
+        creator
+        FROM
+        t_client
+        WHERE 1 = 1
+        <if test="client.clientName != null and client.clientName != ''">
+            AND CLIENT_NAME = #{client.clientName}
+        </if>
+        <if test="client.clientPhone != null and client.clientPhone != ''">
+            AND CLIENT_PHONE = #{client.clientPhone}
+        </if>
+        <if test="client.clientEmail != null and client.clientEmail != ''">
+            AND CLIENT_EMAIL = #{client.clientEmail}
+        </if>
+        <if test="client.clientAddress != null and client.clientAddress != ''">
+            AND CLIENT_ADDRESS = #{client.clientAddress}
+        </if>
+        <if test="client.clientLevel != null and client.clientLevel != ''">
+            AND CLIENT_LEVEL = #{client.clientLevel}
+        </if>
+        <if test="client.clientSex != null and client.clientSex !=''">
+            And CLIENT_SEX &gt; #{client.clientSex}
+        </if>
+        <if test="client.createTime!= null and client.createTime !=''">
+            And CREATE_TIME &lt; #{client.createTime}
+        </if>
+        <if test="client.creator!= null and client.creator !=''">
+            And CREATOR &lt; #{client.creator}
+        </if>
+
+    </sql>
+    <select id="findClientDetailPage" parameterType="cc.mrbird.febs.system.entity.Client" resultType="cc.mrbird.febs.system.entity.Client">
+        <include refid="findClientDetailSql"/>
+    </select>
+
+    <select id="findClientDetail" parameterType="client" resultType="client">
+        <include refid="findClientDetailSql"/>
+    </select>
+
+    <select id="findByName" parameterType="string" resultType="String">
+      SELECT
+        CLIENT_ID clientId,
+        CLIENT_NAME clientName,
+        CLIENT_PHONE clientPhone ,
+        CLIENT_EMAIL clientEmail,
+        CLIENT_ADDRESS clientAddress,
+        CLIENT_LEVEL clientLevel,
+        CLIENT_SEX clientSex,
+        CREATE_TIME  createTime,
+        MODIFY_TIME modifyTime,
+        creator
+        FROM
+        t_client
+    </select>
+</mapper>
