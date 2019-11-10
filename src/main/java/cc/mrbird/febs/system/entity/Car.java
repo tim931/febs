@@ -1,6 +1,5 @@
 package cc.mrbird.febs.system.entity;
 
-import cc.mrbird.febs.common.converter.TimeConverter;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -17,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @TableName("t_car")
-@Excel("车辆信息表") /*用来导入导出@Excel表*/
+@Excel("车辆信息导入导出") /*用来导入导出@Excel表*/
 public class Car implements Serializable{
 
     private static final long serialVersionUID = 9114968824692462696L;
@@ -32,14 +31,14 @@ public class Car implements Serializable{
      *车牌号
      */
     @TableField("LICENSE_PLATE")
-    @ExcelField(value="车牌号")
+    @ExcelField(value="车牌号", required = true,maxLength = 7,comment = "提示：必填，长度不能超过7个字符")
     private String licensePlate;
 
     /**
      * 创建时间
      */
     @TableField("CREATE_TIME")
-    @ExcelField(value = "创建时间", writeConverter = TimeConverter.class)
+    /**  @ExcelField(value = "创建时间",required = false, writeConverter = TimeConverter.class,comment = "提示：创建时间不必填")*/
     private Date createTime;
 
     @TableField(exist = false)
@@ -51,14 +50,14 @@ public class Car implements Serializable{
      * 修改时间
      */
     @TableField("MODIFY_TIME")
-    @ExcelField(value = "修改时间", writeConverter = TimeConverter.class)/** 时间转换器 */
+    /**  @ExcelField(value = "修改时间",required = false, writeConverter = TimeConverter.class,comment = "提示：修改时间不必填")时间转换器 */
     private Date modifyTime;
 
     /**
      * 创建者
      */
     @TableField("CREATOR")
-    @ExcelField(value="创建者")
+    @ExcelField(value="创建者",comment = "提示：创建人必填")
     private String creator;
 
 }

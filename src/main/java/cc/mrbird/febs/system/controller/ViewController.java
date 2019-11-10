@@ -182,6 +182,11 @@ public class ViewController extends BaseController {
         return FebsUtil.view("error/500");
     }
 
+    @GetMapping(FebsConstant.VIEW_PREFIX + "car/carEximportResult")
+    public String carEximportResult() {
+        return FebsUtil.view("system/car/carEximportResult");
+    }
+
     private void resolveUserModel(String username, Model model, Boolean transform) {
         User user = userService.findByName(username);
         model.addAttribute("user", user);

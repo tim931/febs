@@ -1,27 +1,22 @@
 package cc.mrbird.febs.system.service.impl;
 
-import cc.mrbird.febs.common.authentication.ShiroRealm;
 import cc.mrbird.febs.common.entity.FebsConstant;
 import cc.mrbird.febs.common.entity.QueryRequest;
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.system.entity.Car;
-import cc.mrbird.febs.system.entity.Role;
-import cc.mrbird.febs.system.entity.RoleMenu;
 import cc.mrbird.febs.system.mapper.CarMapper;
-import cc.mrbird.febs.system.mapper.RoleMapper;
 import cc.mrbird.febs.system.service.ICarService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +30,9 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarS
 
      @Autowired
      private ICarService iCarService;
+    //导出公共参数
+    @Autowired
+    private FebsProperties properties;
 
     @Override
     /*通过车牌号查找车辆信息*/
@@ -75,6 +73,10 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarS
         return baseMapper.findCarPage(page, car);
     }
 
-
+    @Override
+    @Transactional
+    public void batchInsert(List<Car> list) {
+        saveBatch(list, properties.getMaxBatchInsertNum());
+    }
 
 }

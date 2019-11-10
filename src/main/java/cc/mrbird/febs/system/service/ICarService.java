@@ -2,11 +2,8 @@ package cc.mrbird.febs.system.service;
 
 import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.system.entity.Car;
-import cc.mrbird.febs.system.entity.Role;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -44,5 +41,13 @@ public interface ICarService extends IService<Car>{
      * @return IPage
      */
     IPage<Car> findCarPage( Car car ,QueryRequest request);
+
+
+    /**
+     * 批量插入
+     *
+     * @param list List<Eximport>
+     */
+    void batchInsert(List<Car> list);
 
 }
