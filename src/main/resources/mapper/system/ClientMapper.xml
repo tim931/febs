@@ -34,7 +34,7 @@
         <if test="client.clientSex != null and client.clientSex !=''">
             And CLIENT_SEX = #{client.clientSex}
         </if>
-        <if test="client.createTimeFrom != null and role.createTimeFrom !=''">
+        <if test="client.createTimeFrom != null and client.createTimeFrom !=''">
             And create_time &gt; #{client.createTimeFrom}
         </if>
         <if test="client.createTimeTo!= null and client.createTimeTo !=''">

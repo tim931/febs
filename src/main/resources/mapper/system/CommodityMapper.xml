@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.system.mapper.CommodityMapper">
+    <sql id="findCommodityDetailSql">
+        SELECT
+        commodity_id commodityId,
+        commodity_type commodityType,
+        commodity_name commodityName ,
+        commodity_price commodityPrice,
+        commodity_quantity commodityQuantity,
+        commodity_colour commodityColour
+        FROM
+        t_commodity
+        WHERE 1 = 1
+        <if test="commodity.commodityType != null and commodity.commodityType != ''">
+            AND commodity_type like CONCAT ('%',#{commodity.commodityType},'%')
+        </if>
+        <if test="commodity.commodityColour != null and commodity.commodityColour != ''">
+            AND commodity_colour like CONCAT ('%',#{commodity.commodityColour},'%')
+        </if>
+        <if test="commodity.commodityName != null and commodity.commodityName != ''">
+            AND commodity_name like CONCAT ('%',#{commodity.commodityName},'%')
+        </if>
+    </sql>
+    <select id="findCommodityDetailPage" parameterType="cc.mrbird.febs.system.entity.Commodity" resultType="cc.mrbird.febs.system.entity.Commodity">
+        <include refid="findCommodityDetailSql"/>
+    </select>
+
+    <select id="findCommodityDetail" parameterType="cc.mrbird.febs.system.entity.Commodity" resultType="cc.mrbird.febs.system.entity.Commodity">
+        <include refid="findCommodityDetailSql"/>
+    </select>
+
+    <select id="findCommodityName" parameterType="string" resultType="String">
+       SELECT
+        commodity_id commodityId,
+        commodity_type commodityType,
+        commodity_name commodityName ,
+        commodity_price commodityPrice,
+        commodity_quantity commodityQuantity,
+        commodity_colour commodityColour
+        FROM
+        t_commodity
+        WHERE 1 = 1
+    </select>
+</mapper>

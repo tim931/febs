@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +26,6 @@ import java.util.List;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> implements IClientService {
 
-    @Autowired
-    private IClientService iClientService;
 
     /*通过客户名称查找客户信息*/
     @Override
@@ -78,15 +75,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     @Override
     @Transactional
     public void updateClient(Client client) {
-        client.setClientName(null);
-        client.setClientId(null);
-        client.setClientPhone(null);
-        client.setClientEmail(null);
-        client.setClientAddress(null);
-        client.setClientLevel(null);
-        client.setClientSex(null);
-        client.setCreateTime(null);
-        client.setCreator(null);
-        updateById(client);
+        client.setModifyTime(new Date());
+        baseMapper.updateById(client);
     }
 }

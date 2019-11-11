@@ -6,8 +6,10 @@ import cc.mrbird.febs.common.entity.FebsConstant;
 import cc.mrbird.febs.common.utils.DateUtil;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.entity.Client;
+import cc.mrbird.febs.system.entity.Commodity;
 import cc.mrbird.febs.system.entity.User;
 import cc.mrbird.febs.system.service.IClientService;
+import cc.mrbird.febs.system.service.ICommodityService;
 import cc.mrbird.febs.system.service.IUserService;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -36,6 +38,8 @@ public class ViewController extends BaseController {
     private ShiroHelper shiroHelper;
     @Autowired
     private IClientService iClientService;
+    @Autowired
+    private ICommodityService iCommodityService;
 
     @GetMapping("login")
     @ResponseBody
@@ -131,15 +135,23 @@ public class ViewController extends BaseController {
         return FebsUtil.view("system/user/userAdd");
     }
 
-    /*新增商品*//*
+    /*新增商品*/
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/commodity/add")
-    *//*要求subject中必须同时含有user:add的权限才能执行方法systemUserAdd()
-            。否则抛出异常AuthorizationException。*//*
+    /*要求subject中必须同时含有user:add的权限才能执行方法systemUserAdd()
+            。否则抛出异常AuthorizationException。*/
     @RequiresPermissions("commodity:add")
     public String systemCommodityAdd() {
-        *//*调用工具类拿到视图前缀加上视图名跳转到添加页面*//*
+        /*调用工具类拿到视图前缀加上视图名跳转到添加页面*/
         return FebsUtil.view("system/commodity/commodityAdd");
-    }*/
+    }
+
+    /*修改商品*/
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/commodity/update/{commodityId}")
+    @RequiresPermissions("commodity:update")
+    public String systemCommodityUpdate(@PathVariable Integer commodityId, Model model) {
+        resolveCommodityIdModel(commodityId,model);
+        return FebsUtil.view("system/commodity/commodityUpdate");
+    }
 
     /*新增客戶*/
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/client/add")
@@ -229,8 +241,15 @@ public class ViewController extends BaseController {
             model.addAttribute("lastLoginTime", DateUtil.getDateFormat(user.getLastLoginTime(), DateUtil.FULL_TIME_SPLIT_PATTERN));
     }
 
+
     private void resolveClientModel(Integer clientId , Model model) {
         Client client = iClientService.findById(clientId);
         model.addAttribute("client", client);
     }
+
+    private void resolveCommodityIdModel(Integer commodityId , Model model) {
+        Commodity commodity = iCommodityService.findByIds(commodityId);
+        model.addAttribute("commodity", commodity);
+    }
+
 }

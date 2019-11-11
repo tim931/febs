@@ -89,7 +89,6 @@
         formSelects.render();
 
         form.on('submit(client-add-form-submit)', function (data) {
-            debugger;
             febs.post(ctx + 'client', data.field, function () {
                 layer.closeAll();
                 febs.alert.success('新增客户成功');

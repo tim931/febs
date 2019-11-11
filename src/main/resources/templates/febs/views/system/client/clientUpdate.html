@@ -4,7 +4,6 @@
     }
 </style>
 <div class="layui-fluid" id="client-update">
-    ${client.clientId}
     <form class="layui-form" action="" lay-filter="client-update-form">
 
         <div class="layui-form-item febs-hide">
@@ -73,13 +72,13 @@
         </div>
 
         <div class="layui-form-item febs-hide">
-            <button class="layui-btn" lay-submit="" lay-filter="client-add-form-submit" id="submit"></button>
+            <button class="layui-btn" lay-submit="" lay-filter="client-update-form-submit" id="submit"></button>
             <button type="reset" class="layui-btn" id="reset"></button>
         </div>
     </form>
 </div>
 
-<script>
+<script data-th-inline="javascript">
     layui.use(['febs', 'form', 'formSelects', 'validate', 'treeSelect'], function () {
         var $ = layui.$,
             febs = layui.febs,
@@ -98,7 +97,8 @@
                 "clientEmail": client.clientEmail,
                 "clientAddress": client.clientAddress,
                 "clientLevel": client.clientLevel,
-                "clientSex": client.clientSex
+                "clientSex": client.clientSex,
+                "creator": client.creator
             });
         }
 

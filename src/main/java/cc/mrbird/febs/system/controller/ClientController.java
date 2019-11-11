@@ -2,20 +2,14 @@ package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.ControllerEndpoint;
 import cc.mrbird.febs.common.controller.BaseController;
-import cc.mrbird.febs.common.entity.DeptTree;
 import cc.mrbird.febs.common.entity.FebsResponse;
 import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.utils.MD5Util;
 import cc.mrbird.febs.system.entity.Client;
-import cc.mrbird.febs.system.entity.Dept;
-import cc.mrbird.febs.system.entity.User;
 import cc.mrbird.febs.system.service.IClientService;
-import cc.mrbird.febs.system.service.IUserService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -43,11 +37,11 @@ public class ClientController extends BaseController {
     @GetMapping("list")
     @RequiresPermissions("client:view")
     public FebsResponse clientList(Client client, QueryRequest request) {
-        Map<String, Object> dataTable = getDataTable(this.iClientService.findClientDetail(client,request));
+        Map<String, Object> dataTable = getDataTable(this.iClientService.findClientDetail(client, request));
         return new FebsResponse().success().data(dataTable);
     }
 
-   /* 新增一条客户信息*/
+    /* 新增一条客户信息*/
     @PostMapping
     @RequiresPermissions("client:add")
     @ControllerEndpoint(operation = "新增客户", exceptionMessage = "新增客户失败")
@@ -58,14 +52,14 @@ public class ClientController extends BaseController {
 
 
     /*删除一个客户信息*/
-     @GetMapping("delete/{clientIds}")
-     @RequiresPermissions("client:delete")
-     @ControllerEndpoint(operation = "删除客户信息", exceptionMessage = "删除客户信息失败")
-     public FebsResponse deleteClients(@NotBlank(message = "{required}") @PathVariable String clientIds) {
-         String[] ids = clientIds.split(StringPool.COMMA);
-         this.iClientService.deleteClientIds(ids);
-         return new FebsResponse().success();
-     }
+    @GetMapping("delete/{clientIds}")
+    @RequiresPermissions("client:delete")
+    @ControllerEndpoint(operation = "删除客户信息", exceptionMessage = "删除客户信息失败")
+    public FebsResponse deleteClients(@NotBlank(message = "{required}") @PathVariable String clientIds) {
+        String[] ids = clientIds.split(StringPool.COMMA);
+        this.iClientService.deleteClientIds(ids);
+        return new FebsResponse().success();
+    }
 
     @PostMapping("update")
     @RequiresPermissions("client:update")
@@ -77,7 +71,7 @@ public class ClientController extends BaseController {
         return new FebsResponse().success();
     }
 
-     /*导出excel表*/
+    /*导出excel表*/
     @GetMapping("excel")
     @RequiresPermissions("client:export")
     @ControllerEndpoint(exceptionMessage = "导出Excel失败")

@@ -17,6 +17,7 @@ public interface ClientMapper extends BaseMapper<Client> {
 
     /**
      * 通过客户名称名查找客户信息
+     *
      * @param clientName 客户名称
      * @return 客户信息
      */
@@ -25,7 +26,7 @@ public interface ClientMapper extends BaseMapper<Client> {
     /**
      * 查找客户详细信息
      *
-     * @param page 分页对象
+     * @param page   分页对象
      * @param client 客户对象，用于传递查询条件
      * @return Ipage
      */
