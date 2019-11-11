@@ -5,7 +5,9 @@ import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.entity.FebsConstant;
 import cc.mrbird.febs.common.utils.DateUtil;
 import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.system.entity.Client;
 import cc.mrbird.febs.system.entity.User;
+import cc.mrbird.febs.system.service.IClientService;
 import cc.mrbird.febs.system.service.IUserService;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.PrivateKey;
 
 /**
  * @author MrBird
@@ -31,6 +34,8 @@ public class ViewController extends BaseController {
     private IUserService userService;
     @Autowired
     private ShiroHelper shiroHelper;
+    @Autowired
+    private IClientService iClientService;
 
     @GetMapping("login")
     @ResponseBody
@@ -104,6 +109,12 @@ public class ViewController extends BaseController {
         return FebsUtil.view("system/client/client");
     }
 
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/commodity")
+    @RequiresPermissions("commodity:view")
+    public String systemCommodity() {
+        return FebsUtil.view("system/commodity/commodity");
+    }
+
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/car")
     @RequiresPermissions("car:view")
     public String systemCar() {
@@ -120,6 +131,16 @@ public class ViewController extends BaseController {
         return FebsUtil.view("system/user/userAdd");
     }
 
+    /*新增商品*//*
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/commodity/add")
+    *//*要求subject中必须同时含有user:add的权限才能执行方法systemUserAdd()
+            。否则抛出异常AuthorizationException。*//*
+    @RequiresPermissions("commodity:add")
+    public String systemCommodityAdd() {
+        *//*调用工具类拿到视图前缀加上视图名跳转到添加页面*//*
+        return FebsUtil.view("system/commodity/commodityAdd");
+    }*/
+
     /*新增客戶*/
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/client/add")
     /*要求subject中必须同时含有client:add的权限才能执行方法systemClientAdd()
@@ -130,11 +151,12 @@ public class ViewController extends BaseController {
         return FebsUtil.view("system/client/clientAdd");
     }
 
-    @GetMapping(FebsConstant.VIEW_PREFIX + "system/user/detail/{username}")
-    @RequiresPermissions("user:view")
-    public String systemUserDetail(@PathVariable String username, Model model) {
-        resolveUserModel(username, model, true);
-        return FebsUtil.view("system/user/userDetail");
+    /*修改客戶*/
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/client/update/{clientId}")
+    @RequiresPermissions("client:update")
+    public String systemClientUpdate(@PathVariable Integer clientId, Model model) {
+        resolveClientModel(clientId,model);
+        return FebsUtil.view("system/client/clientUpdate");
     }
 
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/user/update/{username}")
@@ -142,6 +164,13 @@ public class ViewController extends BaseController {
     public String systemUserUpdate(@PathVariable String username, Model model) {
         resolveUserModel(username, model, false);
         return FebsUtil.view("system/user/userUpdate");
+    }
+
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/user/detail/{username}")
+    @RequiresPermissions("user:view")
+    public String systemUserDetail(@PathVariable String username, Model model) {
+        resolveUserModel(username, model, true);
+        return FebsUtil.view("system/user/userDetail");
     }
 
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/role")
@@ -198,5 +227,10 @@ public class ViewController extends BaseController {
         }
         if (user.getLastLoginTime() != null)
             model.addAttribute("lastLoginTime", DateUtil.getDateFormat(user.getLastLoginTime(), DateUtil.FULL_TIME_SPLIT_PATTERN));
+    }
+
+    private void resolveClientModel(Integer clientId , Model model) {
+        Client client = iClientService.findById(clientId);
+        model.addAttribute("client", client);
     }
 }

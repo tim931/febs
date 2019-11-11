@@ -20,6 +20,15 @@ public interface IClientService extends IService<Client> {
     Client findByName(String clientName);
 
     /**
+     * 通过客户id查找客户信息
+     *
+     * @param clientId 客户id
+     * @return 客户
+     */
+    Client findById(Integer clientId);
+
+
+    /**
      * 查找客户详细信息
      *
      * @param request request
