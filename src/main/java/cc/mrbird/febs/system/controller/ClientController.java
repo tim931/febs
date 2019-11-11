@@ -67,4 +67,23 @@ public class ClientController extends BaseController {
          return new FebsResponse().success();
      }
 
+    @PostMapping("update")
+    @RequiresPermissions("client:update")
+    @ControllerEndpoint(operation = "修改客户信息", exceptionMessage = "修改客户失败")
+    public FebsResponse updateClient(@Valid Client client) {
+        if (client.getClientId() == null)
+            throw new FebsException("客户ID为空");
+        this.iClientService.updateClient(client);
+        return new FebsResponse().success();
+    }
+
+     /*导出excel表*/
+    @GetMapping("excel")
+    @RequiresPermissions("client:export")
+    @ControllerEndpoint(exceptionMessage = "导出Excel失败")
+    public void export(QueryRequest queryRequest, Client client, HttpServletResponse response) {
+        List<Client> clients = this.iClientService.findClientDetail(client, queryRequest).getRecords();
+        ExcelKit.$Export(Client.class, response).downXlsx(clients, false);
+    }
+
 }

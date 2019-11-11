@@ -1,0 +1,118 @@
+·<style>
+    #client-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="client-update">
+    ${client.clientId}
+    <form class="layui-form" action="" lay-filter="client-update-form">
+
+        <div class="layui-form-item febs-hide">
+            <div class="layui-input-block">
+                <input type="text" name="clientId" data-th-value="${client.clientId}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">客户名称：</label>
+            <div class="layui-input-block">
+                <input type="text" name="clientName" minlength="2" maxlength="10" lay-verify="range|clientName"
+                       autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require" >客户手机：</label>
+            <div class="layui-input-block">
+                <input type="tel"  name="clientPhone" lay-verify="phone|required"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱：</label>
+            <div class="layui-input-block">
+                <input type="text" name="clientEmail" lay-verify="email" maxlength="50" autocomplete="off"
+                       class="layui-input">
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label  febs-form-item-require"  >客户地址：</label>
+            <div class="layui-input-block">
+                <input type="text" name="clientAddress" lay-verify="required" maxlength="50" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require " >客户级别：</label>
+            <div class="layui-input-block" >
+                <select name="clientLevel" lay-verify="required">
+                    <option value=""></option>
+                    <option value="1">普通</option>
+                    <option value="2">中级</option>
+                    <option value="3">高级</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label ">性别：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="clientSex" value="0" title="男性">
+                <input type="radio" name="clientSex" value="1" title="女性">
+                <input type="radio" name="clientSex" value="2" title="保密" checked="">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label ">创建人：</label>
+            <div class="layui-input-block">
+                <input type="text" name="creator" id="creator" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="client-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'formSelects', 'validate', 'treeSelect'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            client = [[${client}]],
+            validate = layui.validate;
+        /*是表单验证的关键字*/
+        form.verify(validate);
+        form.render();
+        initClientValue();
+        function initClientValue() {
+            form.val("client-update-form", {
+                "clientName": client.clientName,
+                "clientPhone": client.clientPhone,
+                "clientEmail": client.clientEmail,
+                "clientAddress": client.clientAddress,
+                "clientLevel": client.clientLevel,
+                "clientSex": client.clientSex
+            });
+        }
+
+        form.on('submit(client-update-form-submit)', function (data) {
+            if (febs.nativeEqual(data.field, client)) {
+                febs.alert.warn('数据未作任何修改！');
+                return false;
+            }
+            febs.post(ctx + 'client/update', data.field, function () {
+                layer.closeAll();
+                febs.alert.success(client.clientName + ' 用户数据修改成功');
+                $('#febs-client').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

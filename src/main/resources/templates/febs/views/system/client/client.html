@@ -128,9 +128,9 @@
     <span shiro:lacksPermission="client:view,client:update,client:delete">
         <span class="layui-badge-dot febs-bg-orange"></span> <!--无权限-->
     </span>
-        <!--查看用户信息-->
+      <!--  &lt;!&ndash;查看用户信息&ndash;&gt;
     <a lay-event="detail" shiro:hasPermission="client:view"><i
-            class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>
+            class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>-->
         <!--更新用户信息-->
     <a lay-event="edit" shiro:hasPermission="client:update"><i
             class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
@@ -201,7 +201,7 @@
                     var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
                     params.pageSize = $view.find(".layui-laypage-limits option:selected").val();
                     params.pageNum = $view.find(".layui-laypage-em").next().html();
-                    febs.download(ctx + 'client/excel', params, '用户信息表.xlsx');
+                    febs.download(ctx + 'client/excel', params, '客户信息表.xlsx');
                 }
             },
             options: [{
@@ -215,17 +215,8 @@
             }, {
                 name: 'export',
                 title: '导出Excel',
-                perms: 'user:export'
+                perms: 'client:export'
             }]
-        });
-
-        /*树形下拉选择器*/
-        treeSelect.render({
-            elem: $view.find('#dept'),
-            type: 'get',
-            data: ctx + 'client/select/tree',
-            placeholder: '请选择',
-            search: false
         });
 
         table.on('tool(clientTable)', function (obj) {
@@ -245,11 +236,11 @@
                 });
             }
             if (layEvent === 'edit') {
-                febs.modal.open('修改用户', 'system/client/update/' + data.clientName, {
+                febs.modal.open('修改客户信息', 'system/client/update/' + data.clientId, {
                     area: $(window).width() <= 750 ? '90%' : '50%',
                     btn: ['提交', '取消'],
                     yes: function (index, layero) {
-                        $('#user-update').find('#submit').trigger('click');
+                        $('#client-update').find('#submit').trigger('click');
                     },
                     btn2: function () {
                         layer.closeAll();

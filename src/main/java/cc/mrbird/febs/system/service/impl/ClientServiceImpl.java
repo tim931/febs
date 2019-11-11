@@ -3,15 +3,12 @@ package cc.mrbird.febs.system.service.impl;
 
 import cc.mrbird.febs.common.entity.FebsConstant;
 import cc.mrbird.febs.common.entity.QueryRequest;
-import cc.mrbird.febs.common.utils.MD5Util;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.system.entity.Client;
-import cc.mrbird.febs.system.entity.User;
 import cc.mrbird.febs.system.mapper.ClientMapper;
 import cc.mrbird.febs.system.service.IClientService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +34,12 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     @Override
     public Client findByName(String clientName) {
         return baseMapper.findByName(clientName);
+    }
+
+    /*通过Id称查找客户信息*/
+    @Override
+    public Client findById(Integer clientId) {
+        return baseMapper.selectById(clientId);
     }
 
     /*查找客户详细信息*/

@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author MrBird
+ * @author zt
  */
 @Data
 @TableName("t_client")
@@ -35,8 +35,8 @@ public class Client implements Serializable {
     public static final String CLIENT_ADVANCED = "3";
 
     // 性别男
-    public static final String SEX_MALE = "0";
-    // 性别女
+    //    public static final String SEX_MALE = "0";
+    //    // 性别女
     public static final String SEX_FEMALE = "1";
     // 性别保密
     public static final String SEX_SECRECY= "2";

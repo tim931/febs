@@ -17,7 +17,6 @@ public interface ClientMapper extends BaseMapper<Client> {
 
     /**
      * 通过客户名称名查找客户信息
-     *
      * @param clientName 客户名称
      * @return 客户信息
      */
