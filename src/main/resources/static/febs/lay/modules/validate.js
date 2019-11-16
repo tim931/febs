@@ -9,6 +9,7 @@ layui.define(['jquery'], function (exports) {
                     url: ctx + 'user/check/' + value,
                     data: {
                         "userId": item.getAttribute('id')
+
                     },
                     async: false,
                     type: 'get',
@@ -21,6 +22,28 @@ layui.define(['jquery'], function (exports) {
                 }
             }
         },
+
+        commodityName: function (value, item) {
+
+            if (!isEmpty(value)) {
+                var result = '';
+                $.ajax({
+                    url: ctx + 'commodity/check/' + value,
+                    data: {
+                        "commodityId": item.getAttribute('id')
+                    },
+                    async: false,
+                    type: 'get',
+                    success: function (d) {
+                        (!d) && (result = '该商品名称已存在')
+                    }
+                });
+                if (!isEmpty(result)) {
+                    return result;
+                }
+            }
+        },
+
         cron: function (value, item) {
             if (!isEmpty(value)) {
                 var result = '';

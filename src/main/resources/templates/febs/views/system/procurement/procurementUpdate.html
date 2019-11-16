@@ -1,0 +1,95 @@
+                     <div class="layui-fluid" id="procurement-update">
+                    <form class="layui-form layui-table-form" lay-filter="procurement-update-form">
+                        <div class="layui-row">
+                            <div class="layui-col-md10">
+                                <div class="layui-form-item">
+
+                                    <div class="layui-form-item febs-hide">
+                                        <div class="layui-input-block">
+                                            <input type="text" name="procurementId" data-th-value="${procurement.procurementId}" >
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item febs-hide">
+                                        <div class="layui-input-block">
+                                            <input type="text" name="commodityId" data-th-value="${procurement.commodityId}">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">商品名称</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="commodityName" autocomplete="off" class="layui-input" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm  febs-form-item-require">采购数量</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="procurementCount" lay-verify="required" class="layui-input">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm febs-form-item-require">采购金额</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="procurementMoney" lay-verify="required" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">采购人</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="procurementPerson" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item febs-hide">
+                                        <button class="layui-btn" lay-submit="" lay-filter="procurement-update-form-submit" id="submit"></button>
+                                        <button type="reset" class="layui-btn" id="reset"></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+
+                     <script data-th-inline="javascript">
+                         layui.use(['febs', 'form', 'formSelects', 'validate', 'treeSelect'], function () {
+                             var $ = layui.$,
+                                 febs = layui.febs,
+                                 layer = layui.layer,
+                                 form = layui.form,
+                                 procurement = [[${procurement}]],
+                                 validate = layui.validate;
+                             /*是表单验证的关键字*/
+                             form.verify(validate);
+                             form.render();
+                             initClientValue();
+                             function initClientValue() {
+                                 debugger;
+                                 /* 根据ID查找出来的对象数据，渲染到文本框*/
+                                 form.val("procurement-update-form", {
+                                     "commodityName": procurement.commodityName,
+                                     "procurementCount": procurement.procurementCount,
+                                     "procurementMoney": procurement.procurementMoney,
+                                     "procurementPerson": procurement.procurementPerson
+                                 });
+                             }
+
+                             form.on('submit(procurement-update-form-submit)', function (data) {
+                                 if (febs.nativeEqual(data.field, procurement)) {
+                                     febs.alert.warn('数据未作任何修改！');
+                                     return false;
+                                 }
+                                 febs.post(ctx + 'procurement/update', data.field, function () {
+                                     layer.closeAll();
+                                     febs.alert.success(procurement.commodityName + ' 采购记录修改成功');
+                                     $('#febs-procurement').find('#query').click();
+                                 });
+                                 return false;
+                             });
+                         });
+                     </script>

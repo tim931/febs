@@ -8,7 +8,9 @@
         commodity_name commodityName ,
         commodity_price commodityPrice,
         commodity_quantity commodityQuantity,
-        commodity_colour commodityColour
+        commodity_colour commodityColour,
+        CREATE_TIME createTime,
+        MODIFY_TIME modifyTime
         FROM
         t_commodity
         WHERE 1 = 1
@@ -30,16 +32,19 @@
         <include refid="findCommodityDetailSql"/>
     </select>
 
-    <select id="findCommodityName" parameterType="string" resultType="String">
+    <select id="findCommodityName" parameterType="string" resultType="cc.mrbird.febs.system.entity.Commodity">
        SELECT
         commodity_id commodityId,
         commodity_type commodityType,
         commodity_name commodityName ,
         commodity_price commodityPrice,
         commodity_quantity commodityQuantity,
-        commodity_colour commodityColour
+        commodity_colour commodityColour,
+        CREATE_TIME createTime,
+        MODIFY_TIME modifyTime
         FROM
         t_commodity
-        WHERE 1 = 1
+        WHERE
+        commodity_name=#{commodityName}
     </select>
 </mapper>

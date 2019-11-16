@@ -5,12 +5,11 @@ import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.entity.FebsResponse;
 import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.system.entity.Client;
 import cc.mrbird.febs.system.entity.Commodity;
-import cc.mrbird.febs.system.service.IClientService;
 import cc.mrbird.febs.system.service.ICommodityService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,10 @@ public class CommodityController extends BaseController {
     @Autowired
     private ICommodityService iCommodityService;
 
+    @GetMapping("check/{commodityName}")
+    public boolean checkUserName(@NotBlank(message = "{required}") @PathVariable String commodityName, String commodityId) {
+        return this.iCommodityService.findCommodityName(commodityName) == null || StringUtils.isNotBlank(commodityId);
+    }
 
     /*查找所有的用户 分页*/
     @GetMapping("list")
@@ -69,7 +72,7 @@ public class CommodityController extends BaseController {
     @ControllerEndpoint(operation = "修改商品信息", exceptionMessage = "修改商品失败")
     public FebsResponse updateCommodity(@Valid Commodity commodity) {
         if (commodity.getCommodityId() == null)
-            throw new FebsException("客户ID为空");
+            throw new FebsException("商品ID为空");
         this.iCommodityService.updateCommodity(commodity);
         return new FebsResponse().success();
     }

@@ -2,10 +2,12 @@ package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.ControllerEndpoint;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.entity.DeptTree;
 import cc.mrbird.febs.common.entity.FebsResponse;
 import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.system.entity.Client;
+import cc.mrbird.febs.system.entity.Dept;
 import cc.mrbird.febs.system.service.IClientService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
@@ -33,20 +35,28 @@ public class ClientController extends BaseController {
     @Autowired
     private IClientService iClientService;
 
-    /*查找所有的用户 分页*/
+    /*查找所有的客户信息 分页*/
     @GetMapping("list")
     @RequiresPermissions("client:view")
     public FebsResponse clientList(Client client, QueryRequest request) {
-        Map<String, Object> dataTable = getDataTable(this.iClientService.findClientDetail(client, request));
+        Map<String, Object> dataTable = getDataTable(this.iClientService.findClientDetail(client,request));
         return new FebsResponse().success().data(dataTable);
+    }
+
+    /*查找所有的客户信息 分页*/
+    @GetMapping("select/list")
+    @ControllerEndpoint(exceptionMessage = "获取客戶信息失败")
+    public List<Client> clientList1() {
+        List<Client> list =  iClientService.list();
+        return list;
     }
 
     /* 新增一条客户信息*/
     @PostMapping
     @RequiresPermissions("client:add")
-    @ControllerEndpoint(operation = "新增客户", exceptionMessage = "新增客户失败")
+    @ControllerEndpoint(operation = "新增客户信息", exceptionMessage = "新增客户信息失败")
     public FebsResponse addClient(@Valid Client client) {
-        this.iClientService.createClient(client);
+        iClientService.createClient(client);
         return new FebsResponse().success();
     }
 
@@ -56,7 +66,7 @@ public class ClientController extends BaseController {
     @RequiresPermissions("client:delete")
     @ControllerEndpoint(operation = "删除客户信息", exceptionMessage = "删除客户信息失败")
     public FebsResponse deleteClients(@NotBlank(message = "{required}") @PathVariable String clientIds) {
-        String[] ids = clientIds.split(StringPool.COMMA);
+        String[] ids = clientIds.split("@");
         this.iClientService.deleteClientIds(ids);
         return new FebsResponse().success();
     }

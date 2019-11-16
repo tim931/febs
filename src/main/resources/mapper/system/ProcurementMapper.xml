@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.system.mapper.ProcurementMapper">
+    <sql id="findProcurementDetailSql">
+        SELECT
+        p.procurement_id procurementId,
+        p.procurement_count procurementCount,
+        p.procurement_money procurementMoney,
+        p.procurement_time procurementTime,
+        p.procurement_person procurementPerson,
+        c.commodity_name commodityName,
+        c.commodity_price commodityPrice
+        FROM
+        t_procurement p INNER JOIN t_commodity c
+        on p.commodity_id= c.commodity_id
+        WHERE 1=1
+        <if test="procurement.procurementId != null and procurement.procurementId != ''">
+            AND p.procurement_id =#{procurement.procurementId}
+        </if>
+        <if test="procurement.procurementCount != null and procurement.procurementCount != ''">
+            AND p.procurement_count like CONCAT ('%',#{procurement.procurementCount},'%')
+        </if>
+        <if test="procurement.procurementPerson != null and procurement.procurementPerson != ''">
+            AND p.procurement_person like CONCAT ('%',#{procurement.procurementPerson},'%')
+        </if>
+    </sql>
+    <select id="findProcurementById" parameterType="integer" resultType="cc.mrbird.febs.system.entity.Procurement">
+        SELECT
+        p.procurement_id procurementId,
+        p.procurement_count procurementCount,
+        p.procurement_money procurementMoney,
+        p.procurement_time procurementTime,
+        p.procurement_person procurementPerson,
+        c.commodity_name commodityName,
+        c.commodity_price  commodityPrice
+        FROM
+        t_procurement p INNER JOIN t_commodity c
+        on p.commodity_id= c.commodity_id
+        WHERE p.procurement_id=#{procurementId}
+    </select>
+
+    <select id="findProcurementDetail" parameterType="cc.mrbird.febs.system.entity.Procurement"
+            resultType="cc.mrbird.febs.system.entity.Procurement">
+        <include refid="findProcurementDetailSql"/>
+    </select>
+    <select id="findProcurementDetailPage" parameterType="cc.mrbird.febs.system.entity.Procurement"
+            resultType="cc.mrbird.febs.system.entity.Procurement">
+        <include refid="findProcurementDetailSql"/>
+    </select>
+
+    <select id="findProcurementById" parameterType="string" resultType="cc.mrbird.febs.system.entity.Procurement">
+      SELECT
+        p.procurement_id procurementId,
+        p.procurement_count procurementCount ,
+        p.procurement_money procurementMoney,
+        p.procurement_time procurementTime,
+        p.procurement_person procurementPerson,
+        c.commodity_name commodityName
+        FROM
+        t_procurement p INNER JOIN t_commodity c
+        on p.commodity_id= c.commodity_id
+        WHERE 1=1
+    </select>
+
+    <select id="queryCommodityName" resultType="cc.mrbird.febs.system.entity.Commodity">
+      SELECT
+      commodity_id,
+	  commodity_name
+      FROM
+      t_commodity
+
+    </select>
+
+    <update id="UpdateProcurement" parameterType="cc.mrbird.febs.system.entity.Procurement">
+    UPDATE t_procurement p
+    SET
+    p.procurement_count = #{procurementCount},
+    p.procurement_money = #{procurementMoney},
+    p.procurement_person = #{procurementPerson}
+    WHERE
+    procurement_id = #{procurementId}
+</update>
+
+
+</mapper>

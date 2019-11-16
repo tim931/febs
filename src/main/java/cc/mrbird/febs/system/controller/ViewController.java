@@ -7,9 +7,11 @@ import cc.mrbird.febs.common.utils.DateUtil;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.entity.Client;
 import cc.mrbird.febs.system.entity.Commodity;
+import cc.mrbird.febs.system.entity.Procurement;
 import cc.mrbird.febs.system.entity.User;
 import cc.mrbird.febs.system.service.IClientService;
 import cc.mrbird.febs.system.service.ICommodityService;
+import cc.mrbird.febs.system.service.IProcurementService;
 import cc.mrbird.febs.system.service.IUserService;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -40,6 +42,8 @@ public class ViewController extends BaseController {
     private IClientService iClientService;
     @Autowired
     private ICommodityService iCommodityService;
+    @Autowired
+    private IProcurementService iProcurementService;
 
     @GetMapping("login")
     @ResponseBody
@@ -54,7 +58,7 @@ public class ViewController extends BaseController {
     }
 
     @GetMapping("unauthorized")
-    public String unauthorized() {
+    public String unauthorized(){
         return FebsUtil.view("error/403");
     }
 
@@ -148,10 +152,30 @@ public class ViewController extends BaseController {
     /*修改商品*/
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/commodity/update/{commodityId}")
     @RequiresPermissions("commodity:update")
-    public String systemCommodityUpdate(@PathVariable Integer commodityId, Model model) {
+    public String systemCommodityUpdate(@PathVariable Integer commodityId, Model model){
         resolveCommodityIdModel(commodityId,model);
         return FebsUtil.view("system/commodity/commodityUpdate");
     }
+
+    /*新增采购商品*/
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/procurement/add")
+    /*要求subject中必须同时含有client:add的权限才能执行方法systemClientAdd()
+            。否则抛出异常AuthorizationException。*/
+    @RequiresPermissions("procurement:add")
+    public String systemProcurementAdd() {
+        /*调用工具类拿到视图前缀加上视图名跳转到添加页面*/
+        return FebsUtil.view("system/procurement/procurementAdd");
+    }
+
+    /*修改采购商品信息*/
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/procurement/update/{procurementId}")
+    @RequiresPermissions("procurement:update")
+    //@PathVariable可以用来映射URL中的占位符到目标方法的参数中
+    public String systemProcurementUpdate(@PathVariable Integer procurementId, Model model) {
+        resolveProcurementIdModel(procurementId,model);
+        return FebsUtil.view("system/procurement/procurementUpdate");
+    }
+
 
     /*新增客戶*/
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/client/add")
@@ -189,6 +213,12 @@ public class ViewController extends BaseController {
     @RequiresPermissions("role:view")
     public String systemRole() {
         return FebsUtil.view("system/role/role");
+    }
+
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/procurement")
+    @RequiresPermissions("procurement:view")
+    public String systemProcurement() {
+        return FebsUtil.view("system/procurement/procurement");
     }
 
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/menu")
@@ -248,8 +278,15 @@ public class ViewController extends BaseController {
     }
 
     private void resolveCommodityIdModel(Integer commodityId , Model model) {
+        //根据id查询出商品信息
         Commodity commodity = iCommodityService.findByIds(commodityId);
         model.addAttribute("commodity", commodity);
+    }
+
+    /*根据采购商品ID查找商品信息*/
+    private void resolveProcurementIdModel(Integer procurementId , Model model) {
+        Procurement procurement = iProcurementService.queryProcurementById(procurementId);
+        model.addAttribute("procurement", procurement);
     }
 
 }

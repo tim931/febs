@@ -3,11 +3,9 @@ package cc.mrbird.febs.system.service;
 import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.system.entity.Commodity;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
 
 /**
  * @author zt
@@ -25,7 +23,7 @@ public interface ICommodityService extends IService<Commodity> {
 
 
     /**
-     * 通过商品名称名查找商品信息信息
+     * 通过商品名称名查找商品信息
      *
      * @param commodity_name 商品名称
      * @return 客户信息
@@ -46,7 +44,7 @@ public interface ICommodityService extends IService<Commodity> {
     /**
      * 新增商品
      *
-     * @param Commodity commodity
+     * @param  commodity
      */
     void createCommodity(Commodity commodity);
 
@@ -60,7 +58,7 @@ public interface ICommodityService extends IService<Commodity> {
     /**
      * 修改商品信息
      *
-     * @param Commodity commodity
+     * @param  commodity
      */
     void updateCommodity(Commodity commodity);
 

@@ -11,7 +11,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label febs-form-item-require">用户名：</label>
             <div class="layui-input-block">
-                <input type="text" name="username" minlength="3" maxlength="10" lay-verify="range|username"
+                <input type="text" name="username" minlength="4" maxlength="10" lay-verify="range|username"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -122,6 +122,7 @@
         });
 
         form.on('submit(user-add-form-submit)', function (data) {
+            alert(121)
             febs.post(ctx + 'user', data.field, function () {
                 layer.closeAll();
                 febs.alert.success('新增用户成功，初始密码为 1234qwer');

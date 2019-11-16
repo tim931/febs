@@ -1,30 +1,33 @@
-<div class="layui-fluid layui-anim febs-anim" id="febs-commodity" lay-title="商品管理">
+<div class="layui-fluid layui-anim febs-anim" id="febs-procurement" lay-title="采购记录">
     <div class="layui-row febs-container">
         <div class="layui-col-md12">
             <div class="layui-card">
                 <div class="layui-card-body febs-table-full">
-                    <form class="layui-form layui-table-form" lay-filter="commodity-table-form">
+                    <form class="layui-form layui-table-form" lay-filter="procurement-table-form">
                         <div class="layui-row">
                             <div class="layui-col-md10">
                                 <div class="layui-form-item">
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label layui-form-label-sm">商品类型</label>
-                                        <div class="layui-input-inline">
-                                            <input type="text" name="commodityType" autocomplete="off" class="layui-input">
-                                        </div>
-                                    </div>
+
+
 
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">商品名称</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="commodityName" id="commodityName" class="layui-input">
+                                            <input type="text" name="commodityName" autocomplete="off" class="layui-input">
                                         </div>
                                     </div>
 
                                     <div class="layui-inline">
-                                        <label class="layui-form-label layui-form-label-sm">商品颜色</label>
+                                        <label class="layui-form-label layui-form-label-sm">采购数量</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="commodityColour" autocomplete="off" class="layui-input">
+                                            <input type="text" name="procurementCount" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">采购人</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="procurementPerson" autocomplete="off" class="layui-input">
                                         </div>
                                     </div>
 
@@ -41,13 +44,13 @@
                                     <i class="layui-icon">&#xe79b;</i>
                                 </div>
                                 <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more"
-                                     shiro:hasAnyPermissions="commodity:add,commodity:update,commodity:password:reset,commodity:export">
+                                     shiro:hasAnyPermissions="procurement:add,procurement:update,procurement:export">
                                     <i class="layui-icon">&#xe875;</i>
                                 </div>
                             </div>
                         </div>
                     </form>
-                    <table lay-filter="commodityTable" lay-data="{id: 'commodityTable'}"></table>
+                    <table lay-filter="procurementTable" lay-data="{id: 'procurementTable'}"></table>
                 </div>
             </div>
         </div>
@@ -55,16 +58,19 @@
 </div>
 
   <!--对表格的查看、修改、删除操作-->
-<script type="text/html" id="commodity-option">
-    <span shiro:lacksPermission="commodity:view,commodity:update,commodity:delete">
+<script type="text/html" id="procurement-option">
+    <span shiro:lacksPermission="procurement:view,procurement:update,procurement:delete">
         <span class="layui-badge-dot febs-bg-orange"></span> <!--无权限-->
     </span>
 
-    <a lay-event="edit" shiro:hasPermission="commodity:update"><i
+   <!--修改商品信息-->
+    <a lay-event="edit" shiro:hasPermission="procurement:update"><i
             class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
-        <!--删除用户信息-->
-    <a lay-event="del" shiro:hasPermission="commodity:delete">
+
+        <!--删除商品信息-->
+    <a lay-event="del" shiro:hasPermission="procurement:delete">
         <i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
+
 </script>
 
 
@@ -76,11 +82,11 @@
             form = layui.form,
             table = layui.table,
             dropdown = layui.dropdown,
-            $view = $('#febs-commodity'),
+            $view = $('#febs-procurement'),
             $query = $view.find('#query'),
             $reset = $view.find('#reset'),
             $searchForm = $view.find('form'),
-            sortObject = {field: 'commodityTime', type: null},
+            sortObject = {field: 'procurementTime', type: null},
             tableIns;
 
         form.render();
@@ -88,7 +94,7 @@
         initTable();
 
         laydate.render({
-            elem: '#commodityTime',
+            elem: '#procurementTime',
             range: true,
             trigger: 'click'
         });
@@ -96,30 +102,30 @@
         dropdown.render({ /*下拉显示*/
             elem: $view.find('.action-more'),
             click: function (name, elem, event) {
-                var checkStatus = table.checkStatus('commodityTable');
+                var checkStatus = table.checkStatus('procurementTable');
                 if (name === 'add') { /*==和===是有区别的alert('1'==1);//结果是true ('1'===1);//结果是false*/
-                    febs.modal.open('新增商品', 'system/commodity/add', {
+                    febs.modal.open('新增采购记录', 'system/procurement/add', {
                         btn: ['提交', '重置'],
-                        area: $(window).width() <= 750 ? '95%' : '50%',
+                        area:["500px","400px"],
                         yes: function (index, layero) {
-                            $('#commodity-add').find('#submit').trigger('click');
+                            $('#procurement-add').find('#submit').trigger('click');
                         },
                         btn2: function () {
-                            $('#commodity-add').find('#reset').trigger('click');
+                            $('#procurement-add').find('#reset').trigger('click');
                             return false;
                         }
                     });
                 }
                 if (name === 'delete') {
                     if (!checkStatus.data.length) {
-                        febs.alert.warn('请选择需要删除的用户');
+                        febs.alert.warn('请选择需要删除的采购记录');
                     } else {
-                        febs.modal.confirm('删除用户', '确定删除该用户？', function () {
-                            var commodityIds = [];
+                        febs.modal.confirm('删除采购记录', '确定删除该采购记录？', function () {
+                            var procurementIds = [];
                             layui.each(checkStatus.data, function (key, item) {
-                                commodityIds.push(item.commodityId)
+                                procurementIds.push(item.procurementId)
                             });
-                            deleteCommodity(commodityIds.join(','));
+                            deleteProcurement(procurementIds.join(','));
                         });
                     }
                 }
@@ -128,46 +134,43 @@
                     var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
                     params.pageSize = $view.find(".layui-laypage-limits option:selected").val();
                     params.pageNum = $view.find(".layui-laypage-em").next().html();
-                    febs.download(ctx + 'commodity/excel', params, '商品信息表.xlsx');
+                    febs.download(ctx + 'procurement/excel', params, '商品采购信息表.xlsx');
                 }
             },
             options: [{
                 name: 'add',
-                title: '新增用户',
-                perms: 'commodity:add'
+                title: '新增采购记录',
+                perms: 'procurement:add'
             }, {
                 name: 'delete',
-                title: '删除用户',
-                perms: 'commodity:delete'
+                title: '删除采购记录',
+                perms: 'procurement:delete'
             }, {
                 name: 'export',
                 title: '导出Excel',
-                perms: 'commodity:export'
+                perms: 'procurement:export'
             }]
         });
 
-        table.on('tool(commodityTable)', function (obj) {
+        table.on('tool(procurementTable)', function (obj) {
             var data = obj.data,
                 layEvent = obj.event;
             if (layEvent === 'detail') {
-                febs.modal.view('商品信息', 'system/commodity/detail/' + data.clientName, {
+                febs.modal.view('采购记录', 'system/procurement/detail/' + data.procurementId, {
                     area: $(window).width() <= 750 ? '95%' : '660px'
                 });
             }
             if (layEvent === 'del') {
-                febs.modal.confirm('删除商品', '确定删除该商品？', function () {
-                    deleteCommodity(data.commodityId);
-
-
-
+                febs.modal.confirm('删除采购记录', '确定删除该记录？', function () {
+                    deleteProcurement(data.procurementId);
                 });
             }
             if (layEvent === 'edit') {
-                febs.modal.open('修改商品信息', 'system/commodity/update/' + data.commodityId, {
+                febs.modal.open('修改采购信息', 'system/procurement/update/' + data.procurementId, {
                     area: $(window).width() <= 750 ? '90%' : '50%',
                     btn: ['提交', '取消'],
                     yes: function (index, layero) {
-                        $('#commodity-update').find('#submit').trigger('click');
+                        $('#procurement-update').find('#submit').trigger('click');
                     },
                     btn2: function () {
                         layer.closeAll();
@@ -176,7 +179,7 @@
             }
         });
 
-        table.on('sort(commodityTable)', function (obj) {
+        table.on('sort(procurementTable)', function (obj) {
             sortObject = obj;
             tableIns.reload({
                 initSort: obj,
@@ -203,35 +206,33 @@
         function initTable() {
             tableIns = febs.table.init({
                 elem: $view.find('table'),
-                id: 'commodityTable',
-                url: ctx + 'commodity/list',
+                id: 'procurementTable',
+                url: ctx + 'procurement/list',
                 cols: [[
                     {type: 'checkbox'},
-                    {field: 'commodityType', title: '商品类型', minWidth: 100},
                     {field: 'commodityName', title: '商品名称', minWidth: 100},
-                    {field: 'commodityPrice', title: '商品价格', minWidth: 180},
-                    {field: 'commodityQuantity', title: '商品数量', minWidth: 165},
-                    {field: 'commodityColour', title: '商品颜色', minWidth: 180, sort: true},
-                    {field: 'createTime', title: '创建时间', minWidth: 180, sort: true},
-                    {field: 'modifyTime', title: '修改时间', minWidth: 180, sort: true},
-                    {title: '操作', toolbar: '#commodity-option', minWidth: 140}
+                    {field: 'commodityPrice', title: '商品价格', minWidth: 100},
+                    {field: 'procurementCount', title: '采购数量', minWidth: 100},
+                    {field: 'procurementMoney', title: '采购金额', minWidth: 180},
+                    {field: 'procurementTime', title: '采购时间', minWidth: 180, sort: true},
+                    {field: 'procurementPerson', title: '采购人', minWidth: 180},
+                    {title: '操作', toolbar: '#procurement-option', minWidth: 140}
                 ]]
             });
         }
 
         function getQueryParams() {
-
             return {
-                commodityColour: $searchForm.find('input[name="commodityColour"]').val().trim(),
-                commodityName: $searchForm.find("input[name='commodityName']").val(),
-                commodityType: $searchForm.find("input[name='commodityType']").val(),
+                commodityName: $searchForm.find('input[name="commodityName"]').val().trim(),
+                procurementCount: $searchForm.find("input[name='procurementCount']").val(),
+                procurementPerson: $searchForm.find("input[name='procurementPerson']").val(),
                 invalidate_ie_cache: new Date()
             };
         }
 
-        function deleteCommodity(commodityIds) {
-            febs.get(ctx + 'commodity/delete/' + commodityIds, null, function () {
-                febs.alert.success('删除客户成功');
+        function deleteProcurement(procurementIds) {
+            febs.get(ctx + 'procurement/delete/' + procurementIds, null, function () {
+                febs.alert.success('删除采购记录成功');
                 $query.click();
             });
         }

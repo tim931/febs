@@ -78,7 +78,7 @@
             }
             febs.post(ctx + 'commodity/update', data.field, function () {
                 layer.closeAll();
-                febs.alert.success(commodity.commodityName + ' 用户数据修改成功');
+                febs.alert.success(commodity.commodityName + ' 商品信息修改成功');
                 $('#febs-commodity').find('#query').click();
             });
             return false;

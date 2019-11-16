@@ -51,6 +51,7 @@ public class Client implements Serializable {
      * 客户名称
      */
     @TableField("CLIENT_NAME")
+    @Size( message = "{range}")
     @ExcelField(value = "客户名称")
     private String clientName;
 

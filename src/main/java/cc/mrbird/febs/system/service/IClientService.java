@@ -47,7 +47,7 @@ public interface IClientService extends IService<Client> {
     /**
      * 新增客户
      *
-     * @param Client client
+     * @param  client
      */
     void createClient(Client client);
 
@@ -61,7 +61,7 @@ public interface IClientService extends IService<Client> {
     /**
      * 修改客户信息
      *
-     * @param Client client
+     * @param  client
      */
     void updateClient(Client client);
 

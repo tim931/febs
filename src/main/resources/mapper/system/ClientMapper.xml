@@ -40,23 +40,22 @@
         <if test="client.createTimeTo!= null and client.createTimeTo !=''">
             And create_time &lt; #{client.createTimeTo}
         </if>
-        <if test="client.creator!= null and client.creator !=''">
+        <if test="client.creator!= null and client.creator!=''">
             And CREATOR like CONCAT ('%',#{client.creator},'%')
         </if>
-
     </sql>
     <select id="findClientDetailPage" parameterType="cc.mrbird.febs.system.entity.Client" resultType="cc.mrbird.febs.system.entity.Client">
         <include refid="findClientDetailSql"/>
     </select>
 
-    <select id="findClientDetail" parameterType="client" resultType="client">
+    <select id="findClientDetail" parameterType="cc.mrbird.febs.system.entity.Client" resultType="cc.mrbird.febs.system.entity.Client">
         <include refid="findClientDetailSql"/>
     </select>
 
-    <select id="findByName" parameterType="string" resultType="String">
+    <select id="findByName" parameterType="string" resultType="cc.mrbird.febs.system.entity.Client">
       SELECT
         CLIENT_ID clientId,
-        CLIENT_NAME clientName,
+        CLIENT_NAME clientNam,
         CLIENT_PHONE clientPhone ,
         CLIENT_EMAIL clientEmail,
         CLIENT_ADDRESS clientAddress,

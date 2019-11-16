@@ -13,7 +13,6 @@
                                             <input type="text" name="clientName" autocomplete="off" class="layui-input">
                                         </div>
                                     </div>
-
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">客户手机</label>
                                         <div class="layui-input-inline">
@@ -73,7 +72,13 @@
                                             <input type="text" name="creator" autocomplete="off" class="layui-input">
                                         </div>
                                     </div>
-
+                                    <div class="layui-inline">
+                                    <label class="layui-form-label layui-form-label-sm">客户名称</label>
+                                    <div class="layui-input-block">
+                                        <select name="city" id="client-search"  lay-search>
+                                        </select>
+                                    </div>
+                                </div>
                                 </div>
                             </div>
 
@@ -130,7 +135,7 @@
     </span>
       <!--  &lt;!&ndash;查看用户信息&ndash;&gt;
     <a lay-event="detail" shiro:hasPermission="client:view"><i
-            class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>-->
+            class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>
         <!--更新用户信息-->
     <a lay-event="edit" shiro:hasPermission="client:update"><i
             class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
@@ -156,14 +161,31 @@
             tableIns;
 
         form.render();
-
         initTable();
-
         laydate.render({
             elem: '#createTime',
             range: true,
             trigger: 'click'
         });
+
+        var resultData;
+        var htmls= '<option value="">请选择</option>'; //全局变量
+        $.ajax({
+            url: ctx + 'client/select/list',
+            type: "get",
+            dataType : "json",
+            contentType : "application/json",
+            async: false,//这得注意是同步
+            success: function (result) {
+                resultData = result;
+                for(var x in resultData){
+                    htmls += '<option value = "' + resultData[x].clientId + '">' + resultData[x].clientName + '</option>'
+                }
+                $("#client-search").html(htmls);
+            }
+        });
+
+        form.render('select');//需要渲染一下
 
         dropdown.render({ /*下拉显示*/
             elem: $view.find('.action-more'),

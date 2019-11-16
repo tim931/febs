@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,7 +47,9 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
     /*新增商品*/
     @Override
+    @Transactional
     public void createCommodity(Commodity commodity) {
+        /*commodity.setCreateTime(new Date());*/
         save(commodity);
     }
 
