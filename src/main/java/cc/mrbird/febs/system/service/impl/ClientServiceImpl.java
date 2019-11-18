@@ -68,7 +68,13 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     public void deleteClientIds(String[] clientIds) {
         List<String> list = Arrays.asList(clientIds);
         // 删除用户
-        this.removeByIds(list);
+        try
+        {
+            baseMapper.deleteListClient(list);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
      /* * 修改客户信息*/
@@ -76,6 +82,6 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     @Transactional
     public void updateClient(Client client) {
         client.setModifyTime(new Date());
-        baseMapper.updateById(client);
+        baseMapper.updateClient(client);
     }
 }

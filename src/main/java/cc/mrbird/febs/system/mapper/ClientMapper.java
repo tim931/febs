@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,12 +33,26 @@ public interface ClientMapper extends BaseMapper<Client> {
     IPage<Client> findClientDetailPage(Page page, @Param("client") Client client);
 
     /**
-     * 查找用户详细信息
+     * 查找客户详细信息
      *
      * @param client 客户对象，用于传递查询条件
-     * @return List<User>
+     * @return List<Client>
      */
     List<Client> findClientDetail(@Param("client") Client client);
 
+    /**
+     * 批量删除客户信息
+     *
+     * @param idList 客户ID集合，用于传递删除条件
+     */
+     boolean deleteListClient(@Param("idLis")List idList);
+
+
+    /**
+     *  修改客户信息
+     *
+     * @param client 客户对象，用于传递删除条件
+     */
+    boolean updateClient(Client client);
 
 }

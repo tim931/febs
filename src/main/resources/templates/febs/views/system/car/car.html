@@ -136,6 +136,7 @@
         });
 
         var menuTree = eleTree.render({
+
             elem: '.menu-tree',
             url: ctx + 'menu/tree',
             showCheckbox: true,
@@ -210,6 +211,7 @@
             ]
         });
 
+        //导入Excel表
         upload.render({
             elem: '#carImport',
             url: ctx + 'car/carImport',
@@ -238,6 +240,8 @@
                 febs.alert.error('导入失败！');
             }
         });
+
+
 
         table.on('tool(carTable)', function (obj) {
             var data = obj.data,

@@ -15,7 +15,7 @@ import java.util.Date;
  * @author zt
  */
 @Data
-@TableName("t_car")
+@TableName("t_car") //用来命名当前实体类对应数据库表的名字
 @Excel("车辆信息导入导出") /*用来导入导出@Excel表*/
 public class Car implements Serializable{
 
