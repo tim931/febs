@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,6 +21,14 @@ public interface ClientMapper extends BaseMapper<Client> {
      * @return 客户信息
      */
     Client findByName(String clientName);
+
+    /**
+     * 查询所有的客户信息
+     * @param
+     * @return 客户
+     */
+    List<Client> selectClientList();
+
 
     /**
      * 查找客户详细信息

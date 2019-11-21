@@ -5,6 +5,8 @@ import cc.mrbird.febs.system.entity.Client;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @author zt
  */
@@ -17,6 +19,13 @@ public interface IClientService extends IService<Client> {
      * @return 客户
      */
     Client findByName(String clientName);
+
+    /**
+     * 查询所有的客户信息
+     * @param
+     * @return 客户
+     */
+    List<Client> selectClientList();
 
     /**
      * 通过客户id查找客户信息

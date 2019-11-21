@@ -33,6 +33,12 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         return baseMapper.findByName(clientName);
     }
 
+    @Override
+    public List<Client> selectClientList() {
+        return baseMapper.selectClientList();
+    }
+
+
     /*通过Id称查找客户信息*/
     @Override
     public Client findById(Integer clientId) {

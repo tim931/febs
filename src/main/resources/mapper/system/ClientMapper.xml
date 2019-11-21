@@ -68,6 +68,13 @@
         t_client
     </select>
 
+    <select id="selectClientList" resultType="cc.mrbird.febs.system.entity.Client">
+            SELECT
+              *
+            FROM
+            t_client
+    </select>
+
     <delete id="deleteListClient" parameterType="java.util.List" >
         delete from  t_client where CLIENT_ID in
         <foreach collection="idLis"  item="cId" separator="," open="(" close=")" index="">
@@ -81,8 +88,9 @@
          CLIENT_LEVEL=#{clientLevel}, CLIENT_SEX=#{clientSex},
          CREATOR=#{creator}
          WHERE CLIENT_ID=#{clientId}
-
     </update>
+
+
 
 
 </mapper>

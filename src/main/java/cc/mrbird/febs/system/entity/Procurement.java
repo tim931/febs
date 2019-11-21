@@ -37,7 +37,7 @@ public class Procurement implements Serializable {
     /**
      * 商品价格
      */
-    @TableField(exist = false)
+    @TableField(exist = false) //框架方法扫描不会扫描加了这个注解的
     private Double commodityPrice;
 
     /**

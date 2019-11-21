@@ -113,7 +113,6 @@ public class ProcurementServiceImpl extends ServiceImpl<ProcurementMapper, Procu
               //修改后的采购记录
               procurement.setProcurementTime(new Date());
               procurementMapper.UpdateProcurement(procurement);
-
           }else {
               throw new FebsException("商品数量不能小于等于0");
           }
@@ -139,7 +138,7 @@ public class ProcurementServiceImpl extends ServiceImpl<ProcurementMapper, Procu
             //设置修改时间
             commodity.setModifyTime(new Date());
             //修改商品表信息
-            commodityMapper.updateById(commodity);
+           commodityMapper.updateById(commodity);
         }
         List<String> list = Arrays.asList(procurementId);
         baseMapper.deleteBatchIds(list);
