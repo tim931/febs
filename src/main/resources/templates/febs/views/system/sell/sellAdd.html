@@ -1,0 +1,177 @@
+<style>
+    #sell-add {
+        padding: 20px 25px 25px 0;
+    }
+
+    #sell-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="sell-add">
+    <form class="layui-form" action="" lay-filter="sell-add-form">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">商品名：</label>
+            <div class="layui-input-block">
+                <select name="commodityId" id="sell-search" readonly lay-verify="required" >
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">销售时间：</label>
+            <div class="layui-input-block">
+                <input type="tel" name="sellData" id="sellTime" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">单价：</label>
+            <div class="layui-input-block">
+                <input type="tel" name="sellUniValence" id="sellUniValence" lay-verify="required|number" required autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">数量：</label>
+            <div class="layui-input-block">
+                <input type="text" name="sellCount" id="sellCount" lay-verify="required|title" maxlength="50" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label  febs-form-item-require">总金额：</label>
+            <div class="layui-input-block">
+                <input type="text" name="sellTotalMoney" id="sellTotalMoney" lay-verify="required"  autocomplete="off"
+                       class="layui-input" readonly> <!--readonly 只读不可编辑的-->
+            </div>
+        </div>
+
+        <div class="layui-form-item " >
+            <label class="layui-form-label febs-form-item-require">客户：</label>
+            <div class="layui-input-block">
+                <select name="clientId" id="clientName" readonly lay-verify="required"  >
+            </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">销售人：</label>
+            <div class="layui-input-block">
+                <input type="text" name="sellPerson" id="sellPerson" lay-verify="required" maxlength="50" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="sell-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+<script data-th-inline="none" type="text/javascript">
+
+    layui.use(['febs', 'form', 'formSelects', 'validate', 'laydate','treeSelect'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            formSelects = layui.formSelects,
+            form = layui.form,
+            validate = layui.validate;
+
+          laydate.render({
+              elem: '#sellTime',//指定的元素
+              format: 'yyyy-MM-dd'
+    });
+
+        var resultData1;
+        var html = '<option value="">请选择</option>'; //全局变量
+        $.ajax({
+            url: ctx + 'sell/select/listClient',
+            type: "get",
+            dataType : "json",
+            contentType : "application/json",
+            async: false,//这得注意是同步
+            success: function (result) {
+                resultData1 = result;
+                for(var x in resultData1){
+                    html += '<option value = "' + resultData1[x].clientId + '">' + resultData1[x].clientName + '</option>'
+                }
+                $("#clientName").html(html);
+            }
+        });
+        form.render('select');//需要渲染一下
+
+        var resultData;
+        var html = '<option value="">请选择</option>'; //全局变量
+        $.ajax({
+            url: ctx + 'sell/select/list',
+            type: "get",
+            dataType : "json",
+            contentType : "application/json",
+            async: false,//这得注意是同步
+            success: function (result) {
+                resultData = result;
+                for(var x in resultData){
+                    html += '<option value = "' + resultData[x].commodityId + '">' + resultData[x].commodityName + '</option>'
+                }
+                $("#sell-search").html(html);
+            }
+        });
+        form.render('select');//需要渲染一下
+
+        //自定义数量验证规则
+        form.verify({
+            title: function (value) {
+                if (value<= 0) {
+                    return '数量必须大于0';
+                }
+            }
+        });
+
+
+        layui.$('#sellUniValence').on('change', function(){
+            var data = form.val('sell-add-form');
+            var sellUniValence=data.sellUniValence;
+            var sellCount=data.sellCount;
+
+            setSellTotalMoney(sellUniValence,sellCount);
+        });
+
+        layui.$('#sellCount').on('change', function(){
+            var data = form.val('sell-add-form');
+            var sellUniValence=data.sellUniValence;
+            var sellCount=data.sellCount;
+            setSellTotalMoney(sellUniValence,sellCount);
+        });
+
+        function setSellTotalMoney(sellCount, sellUniValence) {
+            var sellTotalMoney = 0;
+            if (sellCount != "" && sellUniValence != "") {
+                sellTotalMoney = sellCount * sellUniValence;
+            }
+            form.val("sell-add-form", {
+                "sellTotalMoney": sellTotalMoney});
+        }
+
+
+        /*是表单验证的关键字*/
+        form.verify(validate);
+        form.render();
+        formSelects.render();
+
+        form.on('submit(sell-add-form-submit)', function (data) {
+            febs.post(ctx + 'sell/add', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增销售记录成功');
+                $('#febs-sell').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>
+

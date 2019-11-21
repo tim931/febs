@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.system.mapper.SellMapper">
+      <sql id="findSellDetailSql" >
+          SELECT
+          s.sell_id sellId,
+          s.sell_time sellTime,
+          s.sell_uniValence sellUniValence,
+          s.sell_count sellCount,
+          s.sell_totalMoney sellTotalMoney,
+          s.commodity_id commodityId,
+          s.sell_person sellPerson,
+          s.client_id clientId,
+          s.create_time createTime,
+          s.create_user_id createUserId,
+          s.modify_user_id modifyUserId,
+          s.modify_time modifyTime,
+          c.CLIENT_NAME clientName,
+          u.USERNAME createName,
+          u1.USERNAME modifyName,
+          co.commodity_name commodityName
+          FROM
+          t_sell s
+          LEFT JOIN t_client c ON s.client_id = c.CLIENT_ID
+          LEFT JOIN t_user u ON u.USER_ID = s.create_user_id
+          LEFT JOIN t_user u1 ON u1.USER_ID = s.modify_user_id
+          LEFT JOIN t_commodity co ON s.commodity_id = co.commodity_id
+          WHERE 1=1
+          <if test="sell.commodityName != null and sell.commodityName != ''">
+              AND co.commodity_name like CONCAT ('%',#{sell.commodityName},'%')
+          </if>
+          <if test="sell.sellId != null and sell.sellId != ''">
+              AND s.sell_id #{sell.sellId}
+          </if>
+          <if test="sell.sellPerson != null and sell.sellPerson != ''">
+              AND s.sell_person like CONCAT ('%',#{sell.sellPerson},'%')
+          </if>
+          <if test="sell.clientName != null and sell.clientName != ''">
+              AND c.CLIENT_NAME  like CONCAT ('%',#{sell.clientName},'%')
+          </if>
+          <if test="sell.createTimeFrom != null and sell.createTimeFrom !=''">
+              And s.sell_time &gt; #{sell.createTimeFrom}
+          </if>
+          <if test="sell.createTimeTo!= null and sell.createTimeTo !=''">
+              And s.sell_time &lt; #{sell.createTimeTo}
+          </if>
+      </sql>
+
+    <select id="findSellDetailPage" parameterType="cc.mrbird.febs.system.entity.Sell" resultType="cc.mrbird.febs.system.entity.Sell">
+        <include refid="findSellDetailSql"/>
+    </select>
+
+    <select id="selectSellById" parameterType="Integer" resultType="cc.mrbird.febs.system.entity.Sell">
+        SELECT
+        s.sell_id sellId,
+        s.sell_time sellTime,
+        s.sell_uniValence sellUniValence,
+        s.sell_count sellCount,
+        s.sell_totalMoney sellTotalMoney,
+        s.commodity_id commodityId,
+        s.sell_person sellPerson,
+        s.client_id clientId,
+        s.create_time createTime,
+        s.create_user_id createUserId,
+        s.modify_user_id modifyUserId,
+        s.modify_time modifyTime,
+        c.CLIENT_NAME clientName,
+        u.USERNAME createName,
+        u1.USERNAME modifyName,
+        co.commodity_name commodityName
+        FROM
+        t_sell s
+        LEFT JOIN t_client c ON s.client_id = c.CLIENT_ID
+        LEFT JOIN t_user u ON u.USER_ID = s.create_user_id
+        LEFT JOIN t_user u1 ON u1.USER_ID = s.modify_user_id
+        LEFT JOIN t_commodity co ON s.commodity_id = co.commodity_id
+        WHERE  s.sell_id = #{sellId}
+    </select>
+
+    <insert id="addSell" parameterType="cc.mrbird.febs.system.entity.Sell" >
+        INSERT into t_sell
+        (commodity_id,sell_uniValence,sell_count,sell_totalMoney,
+        client_id,sell_person,sell_time,create_time,modify_time,
+        create_user_id,modify_user_id)
+        VALUES
+        (#{commodityId},#{sellUniValence},#{sellCount},
+        #{sellTotalMoney},#{clientId},#{sellPerson},#{sellTime},
+        #{createTime},#{modifyTime},#{createUserId},#{modifyUserId})
+    </insert>
+
+    <delete id="deleteSell" >
+        delete from  t_sell
+        where sell_id in
+        <foreach collection="list"  item="sId" separator="," open="(" close=")" index="">
+            #{sId}
+        </foreach>
+    </delete>
+
+    <update id="updateSell" parameterType="cc.mrbird.febs.system.entity.Sell">
+            UPDATE t_sell
+SET commodity_id = #{commodityId},
+sell_uniValence = #{sellUniValence},
+sell_count = #{sellCount},
+sell_totalMoney = #{sellTotalMoney},
+client_id = #{clientId},
+sell_person = #{sellPerson},
+sell_time = #{sellTime},
+create_time = #{createTime},
+modify_time = #{modifyTime},
+create_user_id = #{createUserId},
+modify_user_id = #{modifyUserId}
+WHERE
+	sell_id = #{sellId}
+
+    </update>
+
+
+</mapper>

@@ -1,0 +1,266 @@
+<div class="layui-fluid layui-anim febs-anim" id="febs-sell" lay-title="销售记录">
+    <div class="layui-row febs-container">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body febs-table-full">
+                    <form class="layui-form layui-table-form" lay-filter="sell-table-form">
+                        <div class="layui-row">
+                            <div class="layui-col-md10">
+                                <div class="layui-form-item">
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">商品</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="commodityName" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">销售人</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="sellPerson" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">客户姓名</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="clientName" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">销售时间</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="searchSellTime" class="layui-input" id="searchSellTime">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                           <!-- 查询表格信息-->
+                            <div class="layui-col-md2 layui-col-sm12 layui-col-xs12 table-action-area">
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="query">
+                                    <i class="layui-icon">&#xe848;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="reset">
+                                    <i class="layui-icon">&#xe79b;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more"
+                                     shiro:hasAnyPermissions="sell:add,sell:update,sell:export">
+                                    <i class="layui-icon">&#xe875;</i>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <table lay-filter="sellTable" lay-data="{id: 'sellTable'}"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <!--对表格的查看、修改、删除操作-->
+<script type="text/html" id="sell-option">
+    <span shiro:lacksPermission="sell:view,sell:update,sell:delete">
+        <span class="layui-badge-dot febs-bg-orange"></span> <!--无权限-->
+    </span>
+
+   <!--修改销售记录-->
+    <a lay-event="edit" shiro:hasPermission="sell:update"><i
+            class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
+
+        <!--删除销售记录-->
+    <a lay-event="del" shiro:hasPermission="sell:delete">
+        <i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
+
+</script>
+
+
+<script data-th-inline="none" type="text/javascript">
+    //加载所需模块 Layui的内置模块并非默认就加载的，他必须在你执行该方法后才会加载,推荐你采用预先加载，
+    // 因为这样可以避免到处写layui.use的麻烦
+    layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs', 'treeSelect'], function () {
+        var $ = layui.jquery,
+            laydate = layui.laydate,
+            febs = layui.febs,
+            form = layui.form,
+            table = layui.table,
+            dropdown = layui.dropdown,
+            $view = $('#febs-sell'),
+            $query = $view.find('#query'),
+            $reset = $view.find('#reset'),
+            $searchForm = $view.find('form'),
+            sortObject = {field: 'searchSellTime', type: null},
+            tableIns;
+      //该方法的函数其实返回了所加载的模块接口，所以你其实也可以不通过layui对象赋值获得接口
+        form.render();
+
+        initTable();
+
+        /** 点击文本框显示时间选择*/
+        laydate.render({
+            elem: '#searchSellTime',//指定的元素
+            range: true,     //如果设置 true，将默认采用 “ - ” 分割,也可以直接设置 分割字符 ~
+            trigger: 'click'
+        });
+
+
+        dropdown.render({ /*下拉显示*/
+            elem: $view.find('.action-more'),
+            click: function (name, elem, event) {
+                var checkStatus = table.checkStatus('sellTable');
+                if (name === 'add') { /*==和===是有区别的alert('1'==1);//结果是true ('1'===1);//结果是false*/
+                    febs.modal.open('新增采购记录', 'system/sell/add', {
+                        btn: ['提交', '重置'],
+                        area:$(window).width() <= 750 ? '95%' : '50%',
+                        yes: function (index, layero) {
+                            $('#sell-add').find('#submit').trigger('click');
+                        },
+                        btn2: function () {
+                            $('#sell-add').find('#reset').trigger('click');
+                            return false;
+                        }
+                    });
+                }
+                if (name === 'delete') {
+                    if (!checkStatus.data.length) {
+                        febs.alert.warn('请选择需要删除的采购记录');
+                    } else {
+                        febs.modal.confirm('删除采购记录', '确定删除该采购记录？', function () {
+                            var sellIds = [];
+                            layui.each(checkStatus.data, function (key, item) {
+                                sellIds.push(item.sellId)
+                            });
+                            deleteSell(sellIds.join(','));
+                        });
+                    }
+                }
+
+                if (name === 'export') {
+                    var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
+                    params.pageSize = $view.find(".layui-laypage-limits option:selected").val();
+                    params.pageNum = $view.find(".layui-laypage-em").next().html();
+                    febs.download(ctx + 'sell/excel', params, '销售记录表.xlsx');
+                }
+            },
+            options: [{
+                name: 'add',
+                title: '新增销售记录',
+                perms: 'sell:add'
+            }, {
+                name: 'delete',
+                title: '删除销售记录',
+                perms: 'sell:delete'
+            }, {
+                name: 'export',
+                title: '导出Excel',
+                perms: 'sell:export'
+            }]
+        });
+
+        table.on('tool(sellTable)', function (obj) {
+            var data = obj.data,
+                layEvent = obj.event;
+            if (layEvent === 'detail') {
+                febs.modal.view('采购记录', 'system/sell/detail/' + data.sellId, {
+                    area: $(window).width() <= 750 ? '95%' : '660px'
+                });
+            }
+            if (layEvent === 'del') {
+                febs.modal.confirm('删除采购记录', '确定删除该记录？', function () {
+                    deleteSell(data.sellId);
+                });
+            }
+
+            if (layEvent === 'edit') {
+                debugger;
+                febs.modal.open('修改采购记录', 'system/sell/update/' + data.sellId, {
+                    area: $(window).width() <= 750 ? '90%' : '50%',
+                    btn: ['提交', '取消'],
+                    yes: function (index, layero) {
+                        $('#sell-update').find('#submit').trigger('click');
+                    },
+                    btn2: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        });
+
+        table.on('sort(sellTable)', function (obj) {
+            sortObject = obj;
+            tableIns.reload({
+                initSort: obj,
+                where: $.extend(getQueryParams(), {
+                    field: obj.field,
+                    order: obj.type
+                })
+            });
+        });
+
+        //查询点击事件
+        $query.on('click', function () {
+            var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
+            tableIns.reload({where: params, page: {curr: 1}});
+        });
+
+        //刷新点击事件
+        $reset.on('click', function () {
+            $searchForm[0].reset();
+            sortObject.type = 'null';
+            tableIns.reload({where: getQueryParams(), page: {curr: 1}, initSort: sortObject});
+        });
+
+        //页面表格初始化渲染
+        function initTable() {
+            tableIns = febs.table.init({
+                elem: $view.find('table'),
+                id: 'sellTable',
+                url: ctx + 'sell/list',
+                cols: [[
+                    {type: 'checkbox'},
+                    {field: 'commodityName', title: '商品名', minWidth: 80},
+                    {field: 'sellUniValence', title: '单价', minWidth: 50,sort: true},
+                    {field: 'sellCount', title: '数量', minWidth: 100,sort: true},
+                    {field: 'sellTotalMoney', title: '总金额', minWidth: 100,sort: true},
+                    {field: 'sellTime', title: '销售时间', minWidth: 180,sort: true},
+                    {field: 'clientName', title: '客户', minWidth: 80},
+                    {field: 'sellPerson', title: '销售人', minWidth: 80},
+                    {field: 'createTime', title: '创建时间 ', minWidth: 160,sort: true},
+                    {field: 'modifyTime', title: '修改时间', minWidth: 160,sort: true},
+                    {field: 'createName', title: '创建人', minWidth: 100},
+                    {field: 'modifyName', title: '修改人', minWidth: 120},
+                    {title: '操作', toolbar: '#sell-option', minWidth: 140}
+                ]]
+            });
+            debugger
+        }
+
+        function getQueryParams() {
+            var createTimeFrom='',
+                createTimeTo='',
+                sellTime = $searchForm.find('input[name="searchSellTime"]').val();
+            if (sellTime){
+                createTimeFrom = sellTime.split(' - ')[0];
+                createTimeTo = sellTime.split(' - ')[1];
+            }
+            return {
+                createTimeFrom: createTimeFrom,
+                createTimeTo: createTimeTo,
+                commodityName: $searchForm.find('input[name="commodityName"]').val().trim(),
+                sellPerson: $searchForm.find("input[name='sellPerson']").val(),
+                clientName: $searchForm.find("input[name='clientName']").val(),
+                invalidate_ie_cache: new Date()
+            };
+        }
+
+        function deleteSell(sellIds) {
+            febs.get(ctx + 'sell/delete/' + sellIds, null, function () {
+                febs.alert.success('删除销售记录成功');
+                $query.click();
+            });
+        }
+    })
+</script>

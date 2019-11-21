@@ -5,14 +5,9 @@ import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.entity.FebsConstant;
 import cc.mrbird.febs.common.utils.DateUtil;
 import cc.mrbird.febs.common.utils.FebsUtil;
-import cc.mrbird.febs.system.entity.Client;
-import cc.mrbird.febs.system.entity.Commodity;
-import cc.mrbird.febs.system.entity.Procurement;
-import cc.mrbird.febs.system.entity.User;
-import cc.mrbird.febs.system.service.IClientService;
-import cc.mrbird.febs.system.service.ICommodityService;
-import cc.mrbird.febs.system.service.IProcurementService;
-import cc.mrbird.febs.system.service.IUserService;
+import cc.mrbird.febs.system.entity.*;
+import cc.mrbird.febs.system.mapper.SellMapper;
+import cc.mrbird.febs.system.service.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.ExpiredSessionException;
@@ -26,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.PrivateKey;
+import java.text.SimpleDateFormat;
 
 /**
  * @author MrBird
@@ -44,6 +39,9 @@ public class ViewController extends BaseController {
     private ICommodityService iCommodityService;
     @Autowired
     private IProcurementService iProcurementService;
+    @Autowired
+    private SellMapper sellMapper ;
+
 
     @GetMapping("login")
     @ResponseBody
@@ -111,6 +109,12 @@ public class ViewController extends BaseController {
         return FebsUtil.view("system/user/user");
     }
 
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/sell")
+    @RequiresPermissions("sell:view")
+    public String systemSell() {
+        return FebsUtil.view("system/sell/sell");
+    }
+
     @GetMapping(FebsConstant.VIEW_PREFIX + "system/client")
     @RequiresPermissions("client:view")
     public String systemClient() {
@@ -155,6 +159,24 @@ public class ViewController extends BaseController {
     public String systemCommodityUpdate(@PathVariable Integer commodityId, Model model){
         resolveCommodityIdModel(commodityId,model);
         return FebsUtil.view("system/commodity/commodityUpdate");
+    }
+
+    /*新增销售记录*/
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/sell/add")
+    /*要求subject中必须同时含有user:add的权限才能执行方法systemUserAdd()
+            。否则抛出异常AuthorizationException。*/
+    @RequiresPermissions("sell:add")
+    public String systemSellAdd() {
+        /*调用工具类拿到视图前缀加上视图名跳转到添加页面*/
+        return FebsUtil.view("system/sell/sellAdd");
+    }
+
+    /*修改修改记录*/
+    @GetMapping(FebsConstant.VIEW_PREFIX + "system/sell/update/{sellId}")
+    @RequiresPermissions("sell:update")
+    public String systemSellUpdate(@PathVariable Integer sellId, Model model){
+        resolveSellIModel(sellId,model);
+        return FebsUtil.view("system/sell/sellUpdate");
     }
 
     /*新增采购商品*/
@@ -288,5 +310,15 @@ public class ViewController extends BaseController {
         Procurement procurement = iProcurementService.queryProcurementById(procurementId);
         model.addAttribute("procurement", procurement);
     }
+
+    /*根据销售记录ID查找销售记录信息*/
+    private void resolveSellIModel(Integer sellId , Model model) {
+        Sell sell = sellMapper.selectSellById(sellId);
+        SimpleDateFormat dateformat=new SimpleDateFormat("yyyy-MM-dd ");
+        String date=dateformat.format(sell.getSellTime());
+        sell.setSellData(date);
+        model.addAttribute("sell", sell);
+    }
+
 
 }
